@@ -94,19 +94,26 @@ npm run bridge
 
 ```text
 src/
-  App.jsx
+  App.jsx                      # 主界面：聊天、历史、任务时间线
+  components/OfficeStage.jsx   # 办公室可视化（SVG 角色与动画）
   agents.js
   main.jsx
   styles.css
 scripts/
-  openclaw-visual-bridge.mjs
+  openclaw-visual-bridge.mjs   # 入口 shim
+  bridge/                      # 分层实现，详见 ARCHITECTURE.md
+    config.mjs  lib.mjs  infer.mjs  events.mjs  context.mjs
+    planner.mjs  pipeline.mjs  server.mjs
+    executors/file.mjs  research.mjs  writing.mjs  system.mjs
 ```
+
+架构分层、数据流和「如何新增一个能力」见 `ARCHITECTURE.md`。
 
 ## 下一步
 
-- 把 bridge 拆成 `executors/file|browser|openclaw|system` 模块。
+- 给 lib/infer/planner 纯函数补单测，作为后续重构安全网。
 - 给文件助手升级向量检索或 SQLite FTS，支持更大的本地目录。
 - 给浏览器助手继续扩展 browser-use / Playwright，支持更稳的填表、登录态复用和页面截图回放。
 - 给应用助手扩展 macOS Shortcuts / AppleScript，支持更多可确认动作。
-- 给主控助手接入 LangGraph 或 OpenAI Agents SDK，升级为可持久化规划器。
+- 给主控助手的 LLM 规划增加失败重试与可持久化规划。
 - 增加更细的权限策略、人工接管状态和历史任务详情页。
