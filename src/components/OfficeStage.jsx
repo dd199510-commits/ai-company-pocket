@@ -19,9 +19,15 @@ function stagePoint(agent) {
   }
 }
 
+const PX = 6
+
+function px(col, row, w = 1, h = 1, cls) {
+  return <rect x={col * PX} y={row * PX} width={w * PX} height={h * PX} className={cls} />
+}
+
 /**
- * 矢量数字员工：头、身体、手臂、桌面、显示器都是 SVG 元素，
- * 状态动画（呼吸 / 打字 / 眨眼 / 举手 / 完成徽章）由 CSS 驱动。
+ * 像素风数字员工：整张图都在 6px 网格上用方块拼成（shape-rendering: crispEdges），
+ * 状态动画（呼吸 / 打字 / 眨眼 / 举手 / 徽章）用 steps() 逐帧跳动，保持复古手感。
  */
 function AgentCharacter({ agent }) {
   const supervisor = Boolean(agent.supervisor)
@@ -41,52 +47,53 @@ function AgentCharacter({ agent }) {
       aria-label={`${agent.name} · ${agentStatusText(agent)}`}
     >
       {/* 地面阴影 */}
-      <ellipse className="fig-ground" cx="75" cy="118" rx="52" ry="6" />
-
-      {/* 椅背 */}
-      <rect className="fig-chair" x="59" y="56" width="32" height="34" rx="9" />
+      <rect className="fig-ground" x="27" y="113" width="96" height="7" />
 
       {/* 人物（呼吸动画组） */}
       <g className="fig-person">
-        {/* 左右手臂（打字动画） */}
+        {/* 左右手臂（打字时逐帧敲击） */}
         <g className="fig-arm fig-arm-left">
-          <rect x="44" y="58" width="11" height="26" rx="5.5" />
+          {px(8, 11, 1, 3, 'fig-arm-sleeve')}
+          {px(9, 14, 1, 1, 'fig-skin')}
         </g>
         <g className="fig-arm fig-arm-right">
-          <rect x="95" y="58" width="11" height="26" rx="5.5" />
+          {px(16, 11, 1, 3, 'fig-arm-sleeve')}
+          {px(15, 14, 1, 1, 'fig-skin')}
         </g>
         {/* 待确认时举起的手 */}
         <g className="fig-hand-raised">
-          <rect x="100" y="34" width="10" height="26" rx="5" />
-          <circle cx="105" cy="32" r="6" />
+          {px(16, 8, 1, 3, 'fig-arm-sleeve')}
+          {px(16, 7, 1, 1, 'fig-skin')}
         </g>
-        {/* 身体 */}
-        <path
-          className="fig-body"
-          d="M 49 92 Q 49 56 75 56 Q 101 56 101 92 Z"
-        />
-        {/* 领口 */}
-        <path className="fig-collar" d="M 67 57 Q 75 64 83 57 L 83 62 Q 75 69 67 62 Z" />
+        {/* 身体 + 领口 */}
+        {px(9, 11, 7, 4, 'fig-body')}
+        {px(11, 11, 3, 1, 'fig-collar')}
         {/* 头 */}
         <g className="fig-head-group">
-          <circle className="fig-head" cx="75" cy="40" r="15" />
-          <path
-            className="fig-hair"
-            d="M 60 38 Q 60 24 75 24 Q 90 24 90 38 Q 86 30 75 30 Q 64 30 60 38 Z"
-          />
-          {/* 眼睛（眨眼动画） */}
+          {px(11, 10, 3, 1, 'fig-skin')}
+          {px(10, 3, 5, 1, 'fig-hair')}
+          {px(9, 4, 7, 2, 'fig-hair')}
+          {px(9, 6, 1, 1, 'fig-hair')}
+          {px(15, 6, 1, 1, 'fig-hair')}
+          {px(10, 6, 5, 1, 'fig-skin')}
+          {px(9, 7, 7, 2, 'fig-skin')}
+          {px(10, 9, 5, 1, 'fig-skin')}
           <g className="fig-eyes">
-            <circle className="fig-eye" cx="69.5" cy="41" r="1.9" />
-            <circle className="fig-eye" cx="80.5" cy="41" r="1.9" />
+            {px(11, 7, 1, 1, 'fig-eye')}
+            {px(13, 7, 1, 1, 'fig-eye')}
           </g>
-          {/* 嘴：常态微笑，failed 时变扁 */}
-          <path className="fig-mouth" d="M 71 47 Q 75 50 79 47" />
+          {px(10, 8, 1, 1, 'fig-blush')}
+          {px(14, 8, 1, 1, 'fig-blush')}
+          <rect className="fig-mouth" x="72" y="55" width="6" height="3" />
           {supervisor ? (
             <g className="fig-headset">
-              <path d="M 59 38 Q 59 22 75 22 Q 91 22 91 38" />
-              <circle cx="59" cy="40" r="3.4" />
-              <circle cx="91" cy="40" r="3.4" />
-              <path d="M 91 44 Q 91 52 83 53" />
+              <rect x="54" y="15" width="42" height="4" />
+              <rect x="50" y="19" width="4" height="19" />
+              <rect x="96" y="19" width="4" height="19" />
+              <rect x="47" y="36" width="8" height="11" />
+              <rect x="95" y="36" width="8" height="11" />
+              <rect x="95" y="47" width="3" height="5" />
+              <rect x="86" y="52" width="12" height="3" />
             </g>
           ) : null}
         </g>
@@ -94,56 +101,74 @@ function AgentCharacter({ agent }) {
 
       {/* 桌面（人物前方，挡住下半身） */}
       <g className="fig-desk">
-        <rect className="fig-desk-leg" x="32" y="96" width="7" height="20" rx="2" />
-        <rect className="fig-desk-leg" x="111" y="96" width="7" height="20" rx="2" />
-        <rect className="fig-desk-top" x="20" y="88" width="110" height="11" rx="4" />
-        <rect className="fig-desk-accent" x="20" y="88" width="110" height="3.4" rx="1.7" />
+        <rect className="fig-desk-leg" x="30" y="99" width="6" height="15" />
+        <rect className="fig-desk-leg" x="114" y="99" width="6" height="15" />
+        <rect className="fig-desk-top" x="24" y="90" width="102" height="9" />
+        <rect className="fig-desk-accent" x="24" y="90" width="102" height="3" />
+        <rect className="fig-desk-edge" x="24" y="96" width="102" height="3" />
         {/* 笔记本（背面朝观众） */}
         <g className="fig-laptop">
-          <rect className="fig-laptop-lid" x="57" y="66" width="36" height="24" rx="3" />
-          <circle className="fig-laptop-logo" cx="75" cy="78" r="3" />
-          <rect className="fig-laptop-base" x="53" y="88" width="44" height="4" rx="2" />
+          <rect className="fig-laptop-lid" x="63" y="69" width="24" height="21" />
+          <rect className="fig-laptop-logo" x="72" y="76" width="6" height="6" />
         </g>
         {/* 屏幕工作光晕 */}
-        <ellipse className="fig-screen-glow" cx="75" cy="70" rx="30" ry="16" />
-        {/* 桌面小物：马克杯 + 绿植 */}
+        <ellipse className="fig-screen-glow" cx="75" cy="72" rx="28" ry="15" />
+        {/* 桌面小物：马克杯 + 小盆栽 */}
         <g className="fig-mug">
-          <rect x="106" y="79" width="9" height="9" rx="1.6" />
-          <path d="M 115 81 q 5 2 0 5" fill="none" />
+          <rect x="105" y="81" width="9" height="9" />
+          <rect x="114" y="83" width="3" height="5" />
         </g>
         <g className="fig-plant">
-          <rect x="33" y="81" width="9" height="7" rx="1.6" />
-          <path d="M 37.5 81 q -5 -7 -1 -10 q 3 4 1 10 Z" />
-          <path d="M 37.5 81 q 5 -6 2 -10 q -4 3 -2 10 Z" />
+          <rect className="fig-plant-leaf" x="36" y="71" width="3" height="12" />
+          <rect className="fig-plant-leaf" x="33" y="74" width="3" height="3" />
+          <rect className="fig-plant-leaf" x="39" y="77" width="3" height="3" />
+          <rect className="fig-plant-pot" x="33" y="83" width="9" height="7" />
         </g>
       </g>
 
-      {/* 工作中：上升的数据粒子 */}
+      {/* 工作中：上升的数据像素 */}
       <g className="fig-bits">
-        <rect className="fig-bit fig-bit-1" x="63" y="58" width="4.6" height="4.6" rx="1.2" />
-        <rect className="fig-bit fig-bit-2" x="74" y="60" width="3.8" height="3.8" rx="1" />
-        <rect className="fig-bit fig-bit-3" x="84" y="57" width="4.2" height="4.2" rx="1.1" />
+        <rect className="fig-bit fig-bit-1" x="63" y="57" width="6" height="6" />
+        <rect className="fig-bit fig-bit-2" x="74" y="60" width="5" height="5" />
+        <rect className="fig-bit fig-bit-3" x="85" y="56" width="6" height="6" />
       </g>
 
-      {/* 状态徽章 */}
+      {/* 状态徽章（像素方块 + 点阵图标） */}
       <g className="fig-badge fig-badge-done">
-        <circle cx="113" cy="38" r="11" />
-        <path d="M 107.5 38.4 L 111.5 42.4 L 119 34.4" />
+        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
+        <g className="fig-badge-glyph">
+          <rect x="105" y="35" width="3" height="3" />
+          <rect x="108" y="38" width="3" height="3" />
+          <rect x="111" y="35" width="3" height="3" />
+          <rect x="114" y="32" width="3" height="3" />
+          <rect x="117" y="29" width="3" height="3" />
+        </g>
       </g>
       <g className="fig-badge fig-badge-waiting">
-        <circle cx="113" cy="38" r="11" />
-        <text x="113" y="43" textAnchor="middle">?</text>
+        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
+        <g className="fig-badge-glyph">
+          <rect x="109" y="28" width="9" height="3" />
+          <rect x="106" y="31" width="3" height="3" />
+          <rect x="118" y="31" width="3" height="3" />
+          <rect x="118" y="34" width="3" height="3" />
+          <rect x="115" y="37" width="3" height="3" />
+          <rect x="112" y="40" width="3" height="3" />
+          <rect x="112" y="45" width="3" height="3" />
+        </g>
       </g>
       <g className="fig-badge fig-badge-failed">
-        <circle cx="113" cy="38" r="11" />
-        <text x="113" y="43" textAnchor="middle">!</text>
+        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
+        <g className="fig-badge-glyph">
+          <rect x="111" y="30" width="4" height="11" />
+          <rect x="111" y="44" width="4" height="4" />
+        </g>
       </g>
 
-      {/* 主控雷达环（routing 时扩散） */}
+      {/* 主控雷达环（routing 时扩散的像素方框） */}
       {supervisor ? (
         <g className="fig-radar">
-          <circle cx="75" cy="72" r="26" />
-          <circle cx="75" cy="72" r="26" />
+          <rect x="49" y="46" width="52" height="52" />
+          <rect x="49" y="46" width="52" height="52" />
         </g>
       ) : null}
     </svg>
