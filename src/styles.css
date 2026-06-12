@@ -183,39 +183,37 @@ button {
   left: 0;
   top: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.08), transparent 36%),
-    linear-gradient(180deg, rgba(248, 250, 252, 0.88), rgba(226, 232, 240, 0.92)),
-    #f8fafc;
+  background: #e9eef6;
   isolation: isolate;
   transform-origin: 0 0;
 }
 
+/* 像素墙面：平涂 + 踢脚线 */
 .agent-office-stage::before {
   content: '';
   position: absolute;
-  inset: 30px;
-  border: 1px solid #e2e8f0;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92) 44%, rgba(226, 232, 240, 0.94)),
-    #ffffff;
+  inset: 0 0 auto 0;
+  height: 300px;
+  background: #e6ecf5;
   box-shadow:
-    0 24px 70px rgba(15, 23, 42, 0.07),
-    inset 0 -80px 120px rgba(15, 23, 42, 0.035);
+    inset 0 -22px 0 #dde6f0,
+    inset 0 -26px 0 #c6d3e2;
   pointer-events: none;
   z-index: -2;
 }
 
+/* 像素地板：48px 双色棋盘格 + 砖缝 */
 .agent-office-stage::after {
   content: '';
   position: absolute;
-  inset: auto 58px 50px;
-  height: 45%;
+  left: 0;
+  right: 0;
+  top: 300px;
+  bottom: 0;
   background:
-    linear-gradient(180deg, rgba(203, 213, 225, 0), rgba(148, 163, 184, 0.22)),
-    repeating-linear-gradient(90deg, rgba(148, 163, 184, 0.14) 0 1px, transparent 1px 112px);
-  transform: perspective(520px) rotateX(54deg);
-  transform-origin: bottom;
+    linear-gradient(90deg, rgba(148, 163, 184, 0.16) 2px, transparent 2px) 0 0 / 48px 48px,
+    linear-gradient(0deg, rgba(148, 163, 184, 0.16) 2px, transparent 2px) 0 0 / 48px 48px,
+    repeating-conic-gradient(#eef3f9 0% 25%, #e3eaf3 0% 50%) 0 0 / 96px 96px;
   pointer-events: none;
   z-index: -1;
 }
@@ -229,6 +227,7 @@ button {
   font-size: 24px;
   font-weight: 780;
   line-height: 1.2;
+  text-shadow: 3px 3px 0 #c9d6e5;
 }
 
 .agent-office-title::after {
@@ -240,75 +239,64 @@ button {
   background: linear-gradient(90deg, #0f766e, rgba(15, 118, 110, 0));
 }
 
-.agent-office-grid {
-  position: absolute;
-  inset: 92px 62px 52px;
-  z-index: 0;
-  background:
-    linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(180deg, transparent, #000 15%, #000 88%, transparent);
-  pointer-events: none;
-}
-
-.office-wall-light {
-  position: absolute;
-  top: 98px;
-  z-index: 1;
-  width: 180px;
-  height: 10px;
-  background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.86), transparent);
-  filter: blur(0.3px);
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.office-wall-light::after {
-  content: '';
-  position: absolute;
-  inset: -28px -18px;
-  background: radial-gradient(ellipse, rgba(45, 212, 191, 0.18), transparent 64%);
-  filter: blur(12px);
-}
-
-.office-wall-light-left {
-  left: 72px;
-}
-
-.office-wall-light-right {
-  right: 72px;
-}
-
+/* 像素地毯：平面双描边，不再做透视 */
 .office-command-rug {
   position: absolute;
-  left: 13%;
-  right: 13%;
-  bottom: 8%;
+  left: 27%;
+  right: 27%;
+  top: 350px;
   z-index: 0;
-  height: 31%;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background:
-    radial-gradient(ellipse at 50% 38%, rgba(37, 99, 235, 0.1), transparent 58%),
-    linear-gradient(180deg, rgba(241, 245, 249, 0.58), rgba(226, 232, 240, 0.78));
-  transform: perspective(680px) rotateX(58deg);
-  transform-origin: bottom;
-  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.08);
+  height: 190px;
+  background: #d9e5f3;
+  border: 6px solid #bccfe4;
+  box-shadow: inset 0 0 0 4px #e9f0f8;
   pointer-events: none;
 }
 
-.office-main-halo {
+/* 场景道具容器 */
+.office-prop {
   position: absolute;
-  left: 50%;
-  top: 30%;
-  z-index: 0;
-  width: 34%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.16), transparent 66%);
-  transform: translate(-50%, -50%);
-  filter: blur(4px);
   pointer-events: none;
+}
+
+.office-prop-wall {
+  z-index: 1;
+}
+
+.prop-svg {
+  display: block;
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+
+/* 饮水机气泡逐帧上升 */
+.wc-bubble {
+  animation: wc-bubble-rise 2.4s steps(4, end) infinite;
+}
+
+.wc-bubble-2 {
+  animation-delay: 1.2s;
+}
+
+@keyframes wc-bubble-rise {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* 咖啡机蒸汽逐帧上升 */
+.cs-steam {
+  animation: cs-steam-rise 1.8s steps(4, end) infinite;
+}
+
+.cs-steam-2 {
+  animation-delay: 0.9s;
+}
+
+@keyframes cs-steam-rise {
+  0% { opacity: 0; transform: translateY(6px); }
+  25% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-8px); }
 }
 
 .workspace-status-board {
@@ -322,14 +310,13 @@ button {
   align-content: start;
   gap: 8px;
   padding: 13px 18px 12px;
-  border: 1px solid rgba(45, 212, 191, 0.48);
+  border: 3px solid #0b1322;
   background:
     radial-gradient(circle at 14% 16%, rgba(34, 211, 238, 0.18), transparent 30%),
     linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(17, 24, 39, 0.92));
   box-shadow:
-    0 22px 50px rgba(15, 23, 42, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 0 24px rgba(20, 184, 166, 0.18);
+    7px 7px 0 rgba(15, 23, 42, 0.18),
+    inset 0 0 0 2px rgba(94, 234, 212, 0.32);
   overflow: visible;
   color: #e2e8f0;
   transform: translateX(-50%);
@@ -347,15 +334,7 @@ button {
 }
 
 .workspace-status-board::after {
-  content: '';
-  position: absolute;
-  left: 7%;
-  right: 7%;
-  bottom: -11px;
-  height: 10px;
-  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.62), transparent);
-  filter: blur(4px);
-  pointer-events: none;
+  content: none;
 }
 
 .board-mount {
@@ -376,12 +355,7 @@ button {
 }
 
 .board-screen-glow {
-  position: absolute;
-  inset: -12px;
-  z-index: -1;
-  background: radial-gradient(circle, rgba(20, 184, 166, 0.16), transparent 68%);
-  filter: blur(7px);
-  pointer-events: none;
+  display: none;
 }
 
 .board-topline {
@@ -2080,4 +2054,25 @@ button {
   .agent-station-stretch .fig-arm-right {
     animation: none;
   }
+}
+
+/* ============================================================
+   走动小人投影 + 气泡图标
+   ============================================================ */
+
+.walker-shadow-strip {
+  position: absolute;
+  left: 50%;
+  bottom: 15px;
+  width: 54px;
+  height: 6px;
+  margin-left: -27px;
+  background: rgba(71, 85, 105, 0.24);
+}
+
+.bubble-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  shape-rendering: crispEdges;
 }

@@ -224,11 +224,171 @@ function WalkerSprite() {
   )
 }
 
-function PixelBubble({ className = '' }) {
+function BubbleIcon({ kind }) {
+  if (kind === 'drink') {
+    return (
+      <svg viewBox="0 0 12 12" className="bubble-icon">
+        <rect x="3" y="2" width="6" height="8" fill="#3b82f6" />
+        <rect x="4" y="3" width="2" height="3" fill="#bfdbfe" />
+      </svg>
+    )
+  }
+  if (kind === 'coffee') {
+    return (
+      <svg viewBox="0 0 12 12" className="bubble-icon">
+        <rect x="2" y="5" width="7" height="5" fill="#92400e" />
+        <rect x="9" y="6" width="2" height="2" fill="#92400e" />
+        <rect x="3" y="2" width="2" height="2" fill="#cbd5e1" />
+        <rect x="6" y="1" width="2" height="2" fill="#cbd5e1" />
+      </svg>
+    )
+  }
+  if (kind === 'snack') {
+    return (
+      <svg viewBox="0 0 12 12" className="bubble-icon">
+        <rect x="2" y="2" width="8" height="8" fill="#f59e0b" />
+        <rect x="4" y="4" width="2" height="2" fill="#7c2d12" />
+        <rect x="7" y="6" width="2" height="2" fill="#7c2d12" />
+      </svg>
+    )
+  }
+  return null
+}
+
+function PixelBubble({ className = '', kind = 'dots' }) {
   return (
     <span className={`pixel-bubble ${className}`} aria-hidden="true">
-      <i /><i /><i />
+      {kind === 'dots' ? <><i /><i /><i /></> : <BubbleIcon kind={kind} />}
     </span>
+  )
+}
+
+/* —— 办公场景道具（像素精灵） —— */
+
+function WaterCooler() {
+  return (
+    <svg className="prop-svg" viewBox="0 0 60 102" aria-hidden="true">
+      <rect x="12" y="6" width="36" height="30" fill="#bfdbfe" />
+      <rect x="12" y="16" width="36" height="20" fill="#60a5fa" />
+      <rect className="wc-bubble wc-bubble-1" x="22" y="28" width="4" height="4" fill="#dbeafe" />
+      <rect className="wc-bubble wc-bubble-2" x="34" y="30" width="3" height="3" fill="#dbeafe" />
+      <rect x="24" y="36" width="12" height="6" fill="#93c5fd" />
+      <rect x="9" y="42" width="42" height="48" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" />
+      <rect x="16" y="60" width="6" height="6" fill="#3b82f6" />
+      <rect x="30" y="60" width="6" height="6" fill="#ef4444" />
+      <rect x="14" y="70" width="32" height="4" fill="#e2e8f0" />
+      <rect x="6" y="90" width="48" height="9" fill="#94a3b8" />
+    </svg>
+  )
+}
+
+function CoffeeStation() {
+  return (
+    <svg className="prop-svg" viewBox="0 0 90 102" aria-hidden="true">
+      <g className="coffee-steam">
+        <rect className="cs-steam cs-steam-1" x="24" y="6" width="4" height="4" fill="#cbd5e1" />
+        <rect className="cs-steam cs-steam-2" x="32" y="2" width="4" height="4" fill="#cbd5e1" />
+      </g>
+      <rect x="12" y="18" width="36" height="9" fill="#334155" />
+      <rect x="12" y="27" width="9" height="33" fill="#334155" />
+      <rect x="39" y="27" width="9" height="33" fill="#334155" />
+      <rect x="42" y="30" width="3" height="3" fill="#ef4444" />
+      <rect x="21" y="42" width="18" height="18" fill="#e2e8f0" />
+      <rect x="21" y="51" width="18" height="9" fill="#78350f" />
+      <rect x="12" y="60" width="36" height="6" fill="#334155" />
+      <rect x="60" y="51" width="12" height="9" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
+      <rect x="72" y="54" width="3" height="3" fill="#cbd5e1" />
+      <rect x="0" y="66" width="90" height="12" fill="#a16207" />
+      <rect x="0" y="66" width="90" height="3" fill="#ca8a04" />
+      <rect x="6" y="78" width="9" height="24" fill="#854d0e" />
+      <rect x="75" y="78" width="9" height="24" fill="#854d0e" />
+    </svg>
+  )
+}
+
+function SnackShelf() {
+  return (
+    <svg className="prop-svg" viewBox="0 0 66 90" aria-hidden="true">
+      <rect x="0" y="0" width="6" height="90" fill="#9a6b3f" />
+      <rect x="60" y="0" width="6" height="90" fill="#9a6b3f" />
+      <rect x="0" y="24" width="66" height="6" fill="#b07d49" />
+      <rect x="0" y="54" width="66" height="6" fill="#b07d49" />
+      <rect x="0" y="84" width="66" height="6" fill="#b07d49" />
+      <rect x="9" y="6" width="12" height="18" fill="#ef4444" />
+      <rect x="25" y="9" width="12" height="15" fill="#facc15" />
+      <rect x="41" y="6" width="14" height="18" fill="#22c55e" />
+      <rect x="9" y="37" width="14" height="17" fill="#fb923c" />
+      <rect x="27" y="40" width="12" height="14" fill="#a78bfa" />
+      <rect x="43" y="37" width="12" height="17" fill="#38bdf8" />
+      <rect x="9" y="68" width="20" height="16" fill="#f472b6" />
+      <rect x="33" y="71" width="14" height="13" fill="#34d399" />
+    </svg>
+  )
+}
+
+function RestroomDoor() {
+  return (
+    <svg className="prop-svg" viewBox="0 0 72 132" aria-hidden="true">
+      <rect x="0" y="0" width="72" height="6" fill="#8aa0b8" />
+      <rect x="0" y="0" width="6" height="132" fill="#8aa0b8" />
+      <rect x="66" y="0" width="6" height="132" fill="#8aa0b8" />
+      <rect x="6" y="6" width="60" height="126" fill="#b08968" />
+      <rect x="14" y="66" width="44" height="48" fill="#9a7354" />
+      <rect x="50" y="70" width="6" height="6" fill="#334155" />
+      <rect x="24" y="22" width="24" height="26" fill="#3b82f6" />
+      <rect x="29" y="26" width="4" height="4" fill="#ffffff" />
+      <rect x="28" y="32" width="6" height="11" fill="#ffffff" />
+      <rect x="39" y="26" width="4" height="4" fill="#ffffff" />
+      <rect x="37" y="32" width="8" height="7" fill="#ffffff" />
+      <rect x="39" y="39" width="4" height="4" fill="#ffffff" />
+    </svg>
+  )
+}
+
+function OfficeWindow() {
+  return (
+    <svg className="prop-svg" viewBox="0 0 144 108" aria-hidden="true">
+      <rect x="0" y="0" width="144" height="108" fill="#ffffff" />
+      <rect x="6" y="6" width="132" height="96" fill="#bae3f7" />
+      <rect x="18" y="24" width="30" height="6" fill="#ffffff" />
+      <rect x="24" y="18" width="18" height="6" fill="#ffffff" />
+      <rect x="84" y="48" width="36" height="6" fill="#ffffff" />
+      <rect x="92" y="42" width="20" height="6" fill="#ffffff" />
+      <rect x="69" y="6" width="6" height="96" fill="#ffffff" />
+      <rect x="6" y="51" width="132" height="6" fill="#ffffff" />
+    </svg>
+  )
+}
+
+function CeilingLamp() {
+  return (
+    <svg className="prop-svg" viewBox="0 0 60 36" aria-hidden="true">
+      <rect x="28" y="0" width="4" height="9" fill="#64748b" />
+      <rect x="12" y="9" width="36" height="12" fill="#475569" />
+      <rect x="18" y="21" width="24" height="6" fill="#fde68a" />
+    </svg>
+  )
+}
+
+/** 道具站位点：小人会走过去停留（喝水/咖啡/零食/洗手间）。坐标与下方装饰层渲染位置对齐。 */
+const PROP_SPOTS = [
+  { id: 'water', stand: { x: 150, y: 414 }, face: -1, bubble: 'drink', pause: 2600 },
+  { id: 'coffee', stand: { x: 1002, y: 420 }, face: 1, bubble: 'coffee', pause: 3000 },
+  { id: 'snack', stand: { x: 1080, y: 622 }, face: 1, bubble: 'snack', pause: 2400 },
+  { id: 'restroom', stand: { x: 948, y: 336 }, face: 1, bubble: null, pause: 3400 },
+]
+
+function OfficeDecor() {
+  return (
+    <>
+      <div className="office-prop office-prop-wall" style={{ left: 90, top: 108 }}><OfficeWindow /></div>
+      <div className="office-prop office-prop-wall" style={{ left: 252, top: 30 }}><CeilingLamp /></div>
+      <div className="office-prop office-prop-wall" style={{ left: 906, top: 30 }}><CeilingLamp /></div>
+      <div className="office-prop" style={{ left: 912, top: 168, zIndex: 300 }} title="洗手间"><RestroomDoor /></div>
+      <div className="office-prop" style={{ left: 66, top: 312, zIndex: 414 }} title="饮水机"><WaterCooler /></div>
+      <div className="office-prop" style={{ left: 1044, top: 318, zIndex: 420 }} title="咖啡角"><CoffeeStation /></div>
+      <div className="office-prop" style={{ left: 1118, top: 538, zIndex: 628 }} title="零食架"><SnackShelf /></div>
+    </>
   )
 }
 
@@ -255,7 +415,8 @@ export function WalkerLayer({ walkers, agents }) {
               '--accent-dark': agent.darkAccent,
             }}
           >
-            {walker.bubble ? <PixelBubble /> : null}
+            {walker.bubble ? <PixelBubble kind={walker.bubble} /> : null}
+            <span className="walker-shadow-strip" />
             <span className="walker-flip" style={{ transform: `scaleX(${walker.facing})` }}>
               <WalkerSprite />
             </span>
@@ -352,9 +513,12 @@ function useAmbientLife(agents) {
       })
     }
 
+    const propBusy = {}
+
     const recall = (id, walker, agent) => {
       clearTimers(id)
-      patchWalker(id, { recalled: true, bubble: false })
+      if (walker.propId) propBusy[walker.propId] = false
+      patchWalker(id, { recalled: true, bubble: null })
       walkTo(id, { x: walker.x, y: walker.y }, personAnchor(agent), RECALL_SPEED_MULTIPLIER, () => {
         removeWalker(id)
         scheduleNext(id)
@@ -370,7 +534,7 @@ function useAmbientLife(agents) {
       const roll = Math.random()
       const canWalk = id !== 'main' // 主控留守工位，只做桌前小动作。
 
-      if (roll < 0.28 || !canWalk) {
+      if (roll < 0.2 || !canWalk) {
         setActing((current) => ({ ...current, [id]: 'stretch' }))
         addTimer(id, () => {
           setActing((current) => ({ ...current, [id]: null }))
@@ -380,9 +544,30 @@ function useAmbientLife(agents) {
       }
 
       const home = personAnchor(agent)
-      const spawn = { id, x: home.x, y: home.y, dur: 0, walking: false, facing: 1, bubble: false }
+      const spawn = { id, x: home.x, y: home.y, dur: 0, walking: false, facing: 1, bubble: null }
 
-      if (roll < 0.6) {
+      if (roll < 0.52) {
+        // 去场景道具：饮水机 / 咖啡角 / 零食架 / 洗手间。
+        const freeProps = PROP_SPOTS.filter((prop) => !propBusy[prop.id])
+        if (freeProps.length) {
+          const prop = freeProps[Math.floor(Math.random() * freeProps.length)]
+          propBusy[prop.id] = true
+          setWalkers((current) => ({ ...current, [id]: { ...spawn, propId: prop.id } }))
+          addTimer(id, () => {
+            walkTo(id, home, prop.stand, 1, () => {
+              patchWalker(id, { walking: false, facing: prop.face, bubble: prop.bubble })
+              addTimer(id, () => {
+                patchWalker(id, { bubble: null })
+                propBusy[prop.id] = false
+                walkHome(id, agent)
+              }, prop.pause + Math.random() * 2000)
+            })
+          }, 50)
+          return
+        }
+      }
+
+      if (roll < 0.72) {
         // 在公共区散步，停一会儿再回来。
         const dest = {
           x: OFFICE_STAGE_WIDTH * (0.26 + Math.random() * 0.48),
@@ -417,10 +602,10 @@ function useAmbientLife(agents) {
         walkTo(id, home, dest, 1, () => {
           const partnerNow = agentsRef.current.find((item) => item.id === partner.id)
           const partnerFree = partnerNow && partnerNow.state !== 'working' && partnerNow.state !== 'waiting'
-          patchWalker(id, { walking: false, facing: side === -1 ? 1 : -1, bubble: true })
+          patchWalker(id, { walking: false, facing: side === -1 ? 1 : -1, bubble: 'dots' })
           if (partnerFree) setHostChatting(partner.id, true)
           addTimer(id, () => {
-            patchWalker(id, { bubble: false })
+            patchWalker(id, { bubble: null })
             setHostChatting(partner.id, false)
             walkHome(id, agent)
           }, 2800 + Math.random() * 2600)
@@ -472,7 +657,8 @@ export function AgentStation({ agent, selected, onSelect, stagger = 0, away = fa
     '--agent-y': agent.layout.y,
     '--agent-w': agent.layout.w,
     '--agent-h': agent.layout.h,
-    '--agent-z': agent.layout.z,
+    // 画家算法：按脚底 y 排序，走动小人与工位可以正确互相遮挡。
+    '--agent-z': Math.round(personAnchor(agent).y),
     '--agent-accent': agent.accent,
     '--agent-dark-accent': agent.darkAccent,
     // 错开每个角色的呼吸/眨眼节奏，避免全场同步的机械感。
@@ -693,11 +879,8 @@ export function AgentWorkspace({ agents, selectedId, onSelect, activeTask, pendi
             <div className="agent-office-title">OS Agent Workspace</div>
             <WorkspaceStatusBoard agents={agents} activeTask={activeTask} pendingAction={pendingAction} />
             <AgentLinks agents={agents} activeTask={activeTask} />
-            <div className="office-wall-light office-wall-light-left" aria-hidden="true" />
-            <div className="office-wall-light office-wall-light-right" aria-hidden="true" />
             <div className="office-command-rug" aria-hidden="true" />
-            <div className="office-main-halo" aria-hidden="true" />
-            <div className="agent-office-grid" aria-hidden="true" />
+            <OfficeDecor />
             {agents.map((agent, index) => (
               <AgentStation
                 key={agent.id}
