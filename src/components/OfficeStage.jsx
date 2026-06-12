@@ -19,6 +19,16 @@ function stagePoint(agent) {
   }
 }
 
+/** 角色脚底的地面锚点（舞台像素坐标），行走小人以此为基准。 */
+function personAnchor(agent) {
+  const point = stagePoint(agent)
+  const stationHeight = (Number.parseFloat(agent.layout.h) / 100) * OFFICE_STAGE_HEIGHT
+  return { x: point.x, y: point.y + stationHeight / 2 - 4 }
+}
+
+const WALK_SPEED = 72 // px/s，正常步行
+const RECALL_SPEED_MULTIPLIER = 2.8 // 被派活时快步赶回
+
 const PX = 6
 
 function px(col, row, w = 1, h = 1, cls) {
@@ -175,7 +185,288 @@ function AgentCharacter({ agent }) {
   )
 }
 
-export function AgentStation({ agent, selected, onSelect, stagger = 0 }) {
+/** 全身像素小人（带腿），用于在工区内走动。配色沿用工位调色板类名。 */
+function WalkerSprite() {
+  return (
+    <svg className="walker-svg" viewBox="0 0 90 102" aria-hidden="true">
+      {px(5, 0, 5, 1, 'fig-hair')}
+      {px(4, 1, 7, 2, 'fig-hair')}
+      {px(4, 3, 1, 1, 'fig-hair')}
+      {px(10, 3, 1, 1, 'fig-hair')}
+      {px(5, 3, 5, 1, 'fig-skin')}
+      {px(4, 4, 7, 2, 'fig-skin')}
+      {px(5, 6, 5, 1, 'fig-skin')}
+      {px(6, 4, 1, 1, 'fig-eye-static')}
+      {px(8, 4, 1, 1, 'fig-eye-static')}
+      {px(5, 5, 1, 1, 'fig-blush')}
+      {px(9, 5, 1, 1, 'fig-blush')}
+      <rect className="fig-mouth" x="42" y="37" width="6" height="3" />
+      {px(6, 7, 3, 1, 'fig-skin')}
+      <g className="walker-arm-l">
+        {px(3, 8, 1, 3, 'fig-arm-sleeve')}
+        {px(3, 11, 1, 1, 'fig-skin')}
+      </g>
+      <g className="walker-arm-r">
+        {px(11, 8, 1, 3, 'fig-arm-sleeve')}
+        {px(11, 11, 1, 1, 'fig-skin')}
+      </g>
+      {px(4, 8, 7, 3, 'fig-body')}
+      {px(6, 8, 3, 1, 'fig-collar')}
+      <g className="walker-leg-l">
+        {px(5, 11, 2, 2, 'fig-pants')}
+        {px(4, 13, 3, 1, 'fig-shoe')}
+      </g>
+      <g className="walker-leg-r">
+        {px(8, 11, 2, 2, 'fig-pants')}
+        {px(8, 13, 3, 1, 'fig-shoe')}
+      </g>
+    </svg>
+  )
+}
+
+function PixelBubble({ className = '' }) {
+  return (
+    <span className={`pixel-bubble ${className}`} aria-hidden="true">
+      <i /><i /><i />
+    </span>
+  )
+}
+
+export function WalkerLayer({ walkers, agents }) {
+  const items = Object.values(walkers)
+  if (!items.length) return null
+  return (
+    <div className="walker-layer" aria-hidden="true">
+      {items.map((walker) => {
+        const agent = agents.find((item) => item.id === walker.id)
+        if (!agent) return null
+        return (
+          <div
+            key={walker.id}
+            className={[
+              'walker',
+              walker.walking ? 'walker-walking' : '',
+            ].filter(Boolean).join(' ')}
+            style={{
+              transform: `translate(${walker.x}px, ${walker.y}px)`,
+              transitionDuration: `${walker.dur}s`,
+              zIndex: Math.round(walker.y),
+              '--accent': agent.accent,
+              '--accent-dark': agent.darkAccent,
+            }}
+          >
+            {walker.bubble ? <PixelBubble /> : null}
+            <span className="walker-flip" style={{ transform: `scaleX(${walker.facing})` }}>
+              <WalkerSprite />
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
+ * 环境行为模拟：空闲角色随机伸懒腰 / 在工区散步 / 走到同事工位旁聊天；
+ * 一旦角色被派活（state 离开 idle），立即快步赶回工位。
+ * 整个引擎放在 useEffect 内构建（含随机数和定时器），渲染期只读 state。
+ */
+function useAmbientLife(agents) {
+  const [walkers, setWalkers] = useState({})
+  const [chatHosts, setChatHosts] = useState({})
+  const [acting, setActing] = useState({})
+  const agentsRef = useRef(agents)
+  const walkersRef = useRef(walkers)
+  const chatHostsRef = useRef(chatHosts)
+  const engineRef = useRef(null)
+
+  useEffect(() => {
+    agentsRef.current = agents
+  }, [agents])
+
+  useEffect(() => {
+    walkersRef.current = walkers
+  }, [walkers])
+
+  useEffect(() => {
+    chatHostsRef.current = chatHosts
+  }, [chatHosts])
+
+  // 构建模拟引擎（仅一次）。
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+
+    const timers = {}
+    const addTimer = (id, fn, delay) => {
+      if (!timers[id]) timers[id] = []
+      timers[id].push(setTimeout(fn, delay))
+    }
+    const clearTimers = (id) => {
+      for (const timer of timers[id] ?? []) clearTimeout(timer)
+      timers[id] = []
+    }
+
+    const patchWalker = (id, patch) => {
+      setWalkers((current) => (current[id] ? { ...current, [id]: { ...current[id], ...patch } } : current))
+    }
+    const removeWalker = (id) => {
+      setWalkers((current) => {
+        const next = { ...current }
+        delete next[id]
+        return next
+      })
+    }
+    const setHostChatting = (id, value) => {
+      setChatHosts((current) => {
+        if (Boolean(current[id]) === value) return current
+        const next = { ...current }
+        if (value) next[id] = true
+        else delete next[id]
+        return next
+      })
+    }
+
+    const scheduleNext = (id, base = 9000) => {
+      addTimer(id, () => act(id), base + Math.random() * 16000)
+    }
+
+    const walkTo = (id, from, to, speedMultiplier, onArrive) => {
+      const distance = Math.hypot(to.x - from.x, to.y - from.y)
+      const dur = Math.max(0.4, distance / (WALK_SPEED * speedMultiplier))
+      patchWalker(id, {
+        x: to.x,
+        y: to.y,
+        dur,
+        walking: true,
+        facing: to.x >= from.x ? 1 : -1,
+      })
+      addTimer(id, () => onArrive(), dur * 1000 + 80)
+    }
+
+    const walkHome = (id, agent) => {
+      const walker = walkersRef.current[id]
+      if (!walker) return
+      walkTo(id, { x: walker.x, y: walker.y }, personAnchor(agent), 1, () => {
+        removeWalker(id)
+        scheduleNext(id)
+      })
+    }
+
+    const recall = (id, walker, agent) => {
+      clearTimers(id)
+      patchWalker(id, { recalled: true, bubble: false })
+      walkTo(id, { x: walker.x, y: walker.y }, personAnchor(agent), RECALL_SPEED_MULTIPLIER, () => {
+        removeWalker(id)
+        scheduleNext(id)
+      })
+    }
+
+    const act = (id) => {
+      const agent = agentsRef.current.find((item) => item.id === id)
+      if (!agent || agent.state !== 'idle' || walkersRef.current[id]) {
+        scheduleNext(id, 6000)
+        return
+      }
+      const roll = Math.random()
+      const canWalk = id !== 'main' // 主控留守工位，只做桌前小动作。
+
+      if (roll < 0.28 || !canWalk) {
+        setActing((current) => ({ ...current, [id]: 'stretch' }))
+        addTimer(id, () => {
+          setActing((current) => ({ ...current, [id]: null }))
+          scheduleNext(id)
+        }, 1700)
+        return
+      }
+
+      const home = personAnchor(agent)
+      const spawn = { id, x: home.x, y: home.y, dur: 0, walking: false, facing: 1, bubble: false }
+
+      if (roll < 0.6) {
+        // 在公共区散步，停一会儿再回来。
+        const dest = {
+          x: OFFICE_STAGE_WIDTH * (0.26 + Math.random() * 0.48),
+          y: OFFICE_STAGE_HEIGHT * (0.66 + Math.random() * 0.2),
+        }
+        setWalkers((current) => ({ ...current, [id]: spawn }))
+        addTimer(id, () => {
+          walkTo(id, home, dest, 1, () => {
+            patchWalker(id, { walking: false })
+            addTimer(id, () => walkHome(id, agent), 1600 + Math.random() * 2200)
+          })
+        }, 50)
+        return
+      }
+
+      // 拜访同事：走到对方工位旁聊几句。
+      const candidates = agentsRef.current.filter((item) => (
+        item.id !== id
+        && !walkersRef.current[item.id]
+        && !chatHostsRef.current[item.id]
+      ))
+      if (!candidates.length) {
+        scheduleNext(id, 5000)
+        return
+      }
+      const partner = candidates[Math.floor(Math.random() * candidates.length)]
+      const partnerHome = personAnchor(partner)
+      const side = home.x <= partnerHome.x ? -1 : 1
+      const dest = { x: partnerHome.x + side * 80, y: partnerHome.y + 4 }
+      setWalkers((current) => ({ ...current, [id]: spawn }))
+      addTimer(id, () => {
+        walkTo(id, home, dest, 1, () => {
+          const partnerNow = agentsRef.current.find((item) => item.id === partner.id)
+          const partnerFree = partnerNow && partnerNow.state !== 'working' && partnerNow.state !== 'waiting'
+          patchWalker(id, { walking: false, facing: side === -1 ? 1 : -1, bubble: true })
+          if (partnerFree) setHostChatting(partner.id, true)
+          addTimer(id, () => {
+            patchWalker(id, { bubble: false })
+            setHostChatting(partner.id, false)
+            walkHome(id, agent)
+          }, 2800 + Math.random() * 2600)
+        })
+      }, 50)
+    }
+
+    engineRef.current = { recall, clearTimers }
+    for (const [index, agent] of agentsRef.current.entries()) {
+      addTimer(agent.id, () => act(agent.id), 4000 + index * 2600 + Math.random() * 7000)
+    }
+
+    return () => {
+      engineRef.current = null
+      for (const id of Object.keys(timers)) clearTimers(id)
+    }
+  }, [])
+
+  // 状态变化：被派活的角色立即收回；忙碌的同事不再挂聊天气泡。
+  useEffect(() => {
+    const engine = engineRef.current
+    if (!engine) return
+    for (const [id, walker] of Object.entries(walkersRef.current)) {
+      const agent = agents.find((item) => item.id === id)
+      if (agent && agent.state !== 'idle' && !walker.recalled) {
+        engine.recall(id, walker, agent)
+      }
+    }
+    setChatHosts((current) => {
+      let changed = false
+      const next = { ...current }
+      for (const id of Object.keys(current)) {
+        const state = agents.find((item) => item.id === id)?.state
+        if (state === 'working' || state === 'waiting') {
+          delete next[id]
+          changed = true
+        }
+      }
+      return changed ? next : current
+    })
+  }, [agents])
+
+  return { walkers, chatHosts, acting }
+}
+
+export function AgentStation({ agent, selected, onSelect, stagger = 0, away = false, chatting = false, acting = null }) {
   const style = {
     '--agent-x': agent.layout.x,
     '--agent-y': agent.layout.y,
@@ -194,6 +485,8 @@ export function AgentStation({ agent, selected, onSelect, stagger = 0 }) {
         'agent-station',
         agent.supervisor ? 'agent-station-main' : '',
         selected ? 'agent-station-selected' : '',
+        away ? 'agent-station-away' : '',
+        acting === 'stretch' ? 'agent-station-stretch' : '',
         `agent-station-${agent.state}`,
       ].filter(Boolean).join(' ')}
       style={style}
@@ -202,6 +495,7 @@ export function AgentStation({ agent, selected, onSelect, stagger = 0 }) {
     >
       <span className="agent-station-art">
         <AgentCharacter agent={agent} />
+        {chatting ? <PixelBubble className="station-bubble" /> : null}
         <span className="agent-name-plate">
           <i className="agent-name-dot" aria-hidden="true" />
           {agent.name}
@@ -355,6 +649,7 @@ export function WorkspaceStatusBoard({ agents, activeTask, pendingAction }) {
 export function AgentWorkspace({ agents, selectedId, onSelect, activeTask, pendingAction }) {
   const viewportRef = useRef(null)
   const [stageScale, setStageScale] = useState(1)
+  const { walkers, chatHosts, acting } = useAmbientLife(agents)
 
   useEffect(() => {
     const updateScale = () => {
@@ -410,8 +705,12 @@ export function AgentWorkspace({ agents, selectedId, onSelect, activeTask, pendi
                 selected={agent.id === selectedId}
                 onSelect={onSelect}
                 stagger={index}
+                away={Boolean(walkers[agent.id])}
+                chatting={Boolean(chatHosts[agent.id])}
+                acting={acting[agent.id]}
               />
             ))}
+            <WalkerLayer walkers={walkers} agents={agents} />
           </div>
         </div>
       </div>
