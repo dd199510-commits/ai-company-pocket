@@ -150,7 +150,7 @@ function AgentCharacter({ agent }) {
   )
 }
 
-export function AgentStation({ agent, selected, onSelect }) {
+export function AgentStation({ agent, selected, onSelect, stagger = 0 }) {
   const style = {
     '--agent-x': agent.layout.x,
     '--agent-y': agent.layout.y,
@@ -159,6 +159,8 @@ export function AgentStation({ agent, selected, onSelect }) {
     '--agent-z': agent.layout.z,
     '--agent-accent': agent.accent,
     '--agent-dark-accent': agent.darkAccent,
+    // 错开每个角色的呼吸/眨眼节奏，避免全场同步的机械感。
+    '--agent-stagger': `${(stagger * 0.53) % 2.7}s`,
   }
 
   return (
@@ -244,11 +246,12 @@ export function AgentLinks({ agents, activeTask }) {
         </filter>
       </defs>
 
-      {agents.filter((agent) => agent.id !== 'main').map((agent) => {
+      {agents.filter((agent) => agent.id !== 'main').map((agent, index) => {
         const { from, to } = linkEndpoints(main, agent)
         const path = curvePath(from, to)
         const active = agent.state === 'working' || agent.state === 'waiting'
         const completed = agent.state === 'done'
+        const offset = (index * 0.45) % 2
         return (
           <g
             key={agent.id}
@@ -261,14 +264,14 @@ export function AgentLinks({ agents, activeTask }) {
             style={{ '--link-accent': agent.accent }}
           >
             <path className="agent-link-base" d={path} />
-            <path className="agent-link-flow" d={path} />
+            <path className="agent-link-flow" d={path} style={{ animationDelay: `${-offset}s` }} />
             {active ? (
               <>
                 <circle className="agent-link-particle" r="4">
-                  <animateMotion dur="1.6s" repeatCount="indefinite" path={path} />
+                  <animateMotion dur="2s" begin={`${offset}s`} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.6 1" />
                 </circle>
                 <circle className="agent-link-particle agent-link-particle-soft" r="2.6">
-                  <animateMotion dur="1.6s" begin="0.55s" repeatCount="indefinite" path={path} />
+                  <animateMotion dur="2s" begin={`${offset + 0.7}s`} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.6 1" />
                 </circle>
               </>
             ) : null}
@@ -285,10 +288,10 @@ export function AgentLinks({ agents, activeTask }) {
             filter="url(#link-glow)"
           />
           <circle r="5" className="agent-route-pulse">
-            <animateMotion dur="1.35s" repeatCount="indefinite" path={routePath} />
+            <animateMotion dur="1.6s" repeatCount="indefinite" path={routePath} keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.6 1" />
           </circle>
           <circle r="3" className="agent-route-pulse agent-route-pulse-tail">
-            <animateMotion dur="1.35s" begin="0.4s" repeatCount="indefinite" path={routePath} />
+            <animateMotion dur="1.6s" begin="0.45s" repeatCount="indefinite" path={routePath} keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.6 1" />
           </circle>
         </g>
       ) : null}
@@ -375,12 +378,13 @@ export function AgentWorkspace({ agents, selectedId, onSelect, activeTask, pendi
             <div className="office-command-rug" aria-hidden="true" />
             <div className="office-main-halo" aria-hidden="true" />
             <div className="agent-office-grid" aria-hidden="true" />
-            {agents.map((agent) => (
+            {agents.map((agent, index) => (
               <AgentStation
                 key={agent.id}
                 agent={agent}
                 selected={agent.id === selectedId}
                 onSelect={onSelect}
+                stagger={index}
               />
             ))}
           </div>

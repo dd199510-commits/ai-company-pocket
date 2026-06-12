@@ -529,7 +529,7 @@ button {
   stroke-linecap: round;
   stroke-dasharray: 1 9;
   opacity: 0.55;
-  transition: stroke 320ms ease, opacity 320ms ease;
+  transition: stroke 550ms ease, opacity 550ms ease;
 }
 
 .agent-link-flow {
@@ -539,7 +539,7 @@ button {
   stroke-linecap: round;
   stroke-dasharray: 14 230;
   opacity: 0;
-  transition: opacity 320ms ease;
+  transition: opacity 550ms ease;
 }
 
 .agent-link-active .agent-link-base {
@@ -549,7 +549,7 @@ button {
 
 .agent-link-active .agent-link-flow {
   opacity: 0.9;
-  animation: agent-link-stream 1.6s linear infinite;
+  animation: agent-link-stream 2.2s linear infinite;
 }
 
 .agent-link-done .agent-link-base {
@@ -570,6 +570,7 @@ button {
 .agent-link-particle {
   fill: var(--link-accent, #2563eb);
   opacity: 0.92;
+  will-change: transform;
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--link-accent, #2563eb) 70%, transparent));
 }
 
@@ -640,25 +641,31 @@ button {
   position: absolute;
   inset: 0;
   display: block;
-  transition: transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1), filter 220ms ease;
+  /* 只过渡 transform（GPU 合成），不过渡 filter——filter 过渡走主线程，是掉帧主因。 */
+  transition: transform 260ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  will-change: transform;
 }
 
 .agent-station:hover .agent-station-art,
 .agent-station-selected .agent-station-art {
   transform: translateY(-5px) scale(1.02);
-  filter: drop-shadow(0 16px 26px rgba(15, 23, 42, 0.14));
 }
 
-.agent-station-working .agent-station-art {
-  filter: drop-shadow(0 18px 30px color-mix(in srgb, var(--agent-accent) 26%, transparent));
+/* 状态光效改用角色脚下的地面阴影（小面积、低成本），代替整个工位的 drop-shadow。 */
+.agent-station-working .fig-ground {
+  fill: color-mix(in srgb, var(--agent-accent) 30%, transparent);
 }
 
-.agent-station-waiting .agent-station-art {
-  filter: drop-shadow(0 18px 26px rgba(245, 158, 11, 0.24));
+.agent-station-waiting .fig-ground {
+  fill: rgba(245, 158, 11, 0.3);
 }
 
-.agent-station-done .agent-station-art {
-  filter: drop-shadow(0 14px 22px rgba(22, 163, 74, 0.14));
+.agent-station-done .fig-ground {
+  fill: rgba(22, 163, 74, 0.24);
+}
+
+.agent-station-failed .fig-ground {
+  fill: rgba(220, 38, 38, 0.26);
 }
 
 .agent-station-reserved .agent-station-art {
@@ -690,6 +697,7 @@ button {
 
 .fig-ground {
   fill: rgba(100, 116, 139, 0.18);
+  transition: fill 600ms ease;
 }
 
 .fig-chair {
@@ -701,12 +709,14 @@ button {
 /* —— 人物 —— */
 
 .fig-person {
-  animation: fig-breathe 3.4s ease-in-out infinite;
+  animation: fig-breathe 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
 }
 
 @keyframes fig-breathe {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-1.6px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-1.7px) scale(1.006); }
 }
 
 .fig-body {
@@ -737,6 +747,7 @@ button {
 .fig-eye {
   fill: #1f2937;
   animation: fig-blink 4.6s ease-in-out infinite;
+  animation-delay: calc(var(--agent-stagger, 0s) * 1.8);
 }
 
 @keyframes fig-blink {
@@ -781,22 +792,31 @@ button {
   fill: #dc2626;
 }
 
+.fig-arm {
+  will-change: transform;
+}
+
 .figure-state-working .fig-arm-left {
-  animation: fig-type 0.46s ease-in-out infinite;
+  animation: fig-type 0.56s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 .figure-state-working .fig-arm-right {
-  animation: fig-type 0.46s ease-in-out 0.23s infinite;
+  animation: fig-type 0.56s cubic-bezier(0.45, 0, 0.55, 1) 0.28s infinite;
 }
 
 @keyframes fig-type {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(2.4px); }
+  50% { transform: translateY(2.1px); }
 }
 
 /* 待确认举手：默认隐藏 */
 .fig-hand-raised {
   opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+.fig-arm-right {
+  transition: opacity 320ms ease;
 }
 
 .fig-hand-raised rect,
@@ -1027,7 +1047,6 @@ button {
   text-overflow: ellipsis;
   transform: translateX(-50%);
   white-space: nowrap;
-  backdrop-filter: blur(4px);
 }
 
 .agent-name-dot {
