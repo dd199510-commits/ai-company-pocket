@@ -267,7 +267,7 @@ function PixelBubble({ className = '', kind = 'dots' }) {
 
 function WaterCooler() {
   return (
-    <svg className="prop-svg" viewBox="0 0 60 102" aria-hidden="true">
+    <svg className="prop-svg" viewBox="0 0 60 102" width="60" height="102" aria-hidden="true">
       <rect x="12" y="6" width="36" height="30" fill="#bfdbfe" />
       <rect x="12" y="16" width="36" height="20" fill="#60a5fa" />
       <rect className="wc-bubble wc-bubble-1" x="22" y="28" width="4" height="4" fill="#dbeafe" />
@@ -284,7 +284,7 @@ function WaterCooler() {
 
 function CoffeeStation() {
   return (
-    <svg className="prop-svg" viewBox="0 0 90 102" aria-hidden="true">
+    <svg className="prop-svg" viewBox="0 0 90 102" width="90" height="102" aria-hidden="true">
       <g className="coffee-steam">
         <rect className="cs-steam cs-steam-1" x="24" y="6" width="4" height="4" fill="#cbd5e1" />
         <rect className="cs-steam cs-steam-2" x="32" y="2" width="4" height="4" fill="#cbd5e1" />
@@ -308,7 +308,7 @@ function CoffeeStation() {
 
 function SnackShelf() {
   return (
-    <svg className="prop-svg" viewBox="0 0 66 90" aria-hidden="true">
+    <svg className="prop-svg" viewBox="0 0 66 90" width="66" height="90" aria-hidden="true">
       <rect x="0" y="0" width="6" height="90" fill="#9a6b3f" />
       <rect x="60" y="0" width="6" height="90" fill="#9a6b3f" />
       <rect x="0" y="24" width="66" height="6" fill="#b07d49" />
@@ -328,7 +328,7 @@ function SnackShelf() {
 
 function RestroomDoor() {
   return (
-    <svg className="prop-svg" viewBox="0 0 72 132" aria-hidden="true">
+    <svg className="prop-svg" viewBox="0 0 72 132" width="72" height="132" aria-hidden="true">
       <rect x="0" y="0" width="72" height="6" fill="#8aa0b8" />
       <rect x="0" y="0" width="6" height="132" fill="#8aa0b8" />
       <rect x="66" y="0" width="6" height="132" fill="#8aa0b8" />
@@ -347,7 +347,7 @@ function RestroomDoor() {
 
 function OfficeWindow() {
   return (
-    <svg className="prop-svg" viewBox="0 0 144 108" aria-hidden="true">
+    <svg className="prop-svg" viewBox="0 0 144 108" width="144" height="108" aria-hidden="true">
       <rect x="0" y="0" width="144" height="108" fill="#ffffff" />
       <rect x="6" y="6" width="132" height="96" fill="#bae3f7" />
       <rect x="18" y="24" width="30" height="6" fill="#ffffff" />
@@ -362,7 +362,7 @@ function OfficeWindow() {
 
 function CeilingLamp() {
   return (
-    <svg className="prop-svg" viewBox="0 0 60 36" aria-hidden="true">
+    <svg className="prop-svg" viewBox="0 0 60 36" width="60" height="36" aria-hidden="true">
       <rect x="28" y="0" width="4" height="9" fill="#64748b" />
       <rect x="12" y="9" width="36" height="12" fill="#475569" />
       <rect x="18" y="21" width="24" height="6" fill="#fde68a" />
