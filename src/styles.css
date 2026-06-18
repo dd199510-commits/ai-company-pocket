@@ -3480,89 +3480,6 @@ button {
 }
 
 /* ============================================================
-   修复「企鹅移动像飘在空中」
-   原因：走动时 penguin-walker-idle(常驻上下浮) + penguin-walker-bob(再上下浮)
-   叠加，且脚椭圆被上抬脱离身体。改为左右摇摆的企鹅踱步，脚贴地。
-   ============================================================ */
-
-/* 1) 走动时取消整张 svg 的上下颠簸（保留水平位移由 JS 控制） */
-.walker-walking .walker-persona-penguin {
-  animation: none;
-}
-
-/* 2) 走动时核心改为左右摇摆（绕脚底旋转），覆盖常驻 idle 浮动 */
-.walker-walking .penguin-walker-core {
-  animation: penguin-waddle 0.46s steps(2, end) infinite;
-  transform-box: fill-box;
-  transform-origin: 50% 92%;
-}
-
-@keyframes penguin-waddle {
-  0% { transform: rotate(-3.5deg); }
-  50% { transform: rotate(3.5deg); }
-  100% { transform: rotate(-3.5deg); }
-}
-
-/* 3) 脚不再向上抬，改为随摇摆轻微左右挪动（贴地小碎步） */
-.walker-walking .penguin-walker-foot-left {
-  animation: penguin-foot-shuffle 0.46s steps(2, end) infinite;
-}
-
-.walker-walking .penguin-walker-foot-right {
-  animation: penguin-foot-shuffle 0.46s steps(2, end) 0.23s infinite;
-}
-
-@keyframes penguin-foot-shuffle {
-  0%, 100% { transform: translateX(-1px); }
-  50% { transform: translateX(1px); }
-}
-
-/* 4) 鳍随摆动小幅摆臂，不再大幅下沉 */
-.walker-walking .penguin-walker-flipper-left,
-.walker-walking .penguin-walker-flipper-right {
-  animation: penguin-flipper-swing 0.46s steps(2, end) infinite;
-}
-
-.walker-walking .penguin-walker-flipper-right {
-  animation-delay: 0.23s;
-}
-
-@keyframes penguin-flipper-swing {
-  0%, 100% { transform: rotate(-6deg); }
-  50% { transform: rotate(6deg); }
-}
-
-/* 5) 移动企鹅使用更小的落地尺寸：脚底贴 walker 锚点，避免压到同事头顶。
-   精灵 viewBox 底部留白约 10%（脚画在 y93/102），故把 margin-top 下移到
-   -100px，让脚椭圆正好压在地面锚点上；影子随之挪到脚下。 */
-.walker-persona-penguin {
-  width: 98px;
-  height: 111px;
-  margin-left: -49px;
-  margin-top: -100px;
-}
-
-.walker-persona-penguin .walker-shadow-strip {
-  bottom: 11px;
-  width: 50px;
-  height: 6px;
-  margin-left: -25px;
-  background: rgba(71, 85, 105, 0.3);
-}
-
-/* 6) 停下来的企鹅也不做上下漂浮，只保留贴地左右摇 */
-.walker-persona-penguin .penguin-walker-core {
-  animation: penguin-grounded-idle 1.35s steps(2, end) infinite;
-  transform-box: fill-box;
-  transform-origin: 50% 92%;
-}
-
-@keyframes penguin-grounded-idle {
-  0%, 100% { transform: rotate(-1.5deg); }
-  50% { transform: rotate(1.5deg); }
-}
-
-/* ============================================================
    像素企鹅 v2（整体重画）：方块网格，脚贴 viewBox 底部，
    不再依赖 margin 微调；干净的待机呼吸 + 企鹅式踱步。
    ============================================================ */
@@ -3587,32 +3504,26 @@ button {
   animation: fig-blink 4.8s steps(1, end) infinite;
 }
 
-/* —— 走动版：复位为基础 walker 尺寸（脚已在底部，天然贴地） —— */
+/* —— 走动版：复位为基础 walker 尺寸；整体略下压，脚踩实地面 —— */
 .walker-persona-penguin {
   width: 90px;
   height: 102px;
   margin-left: -45px;
-  margin-top: -98px;
+  margin-top: -93px;
 }
 
 .walker-persona-penguin .walker-shadow-strip {
-  bottom: 2px;
-  width: 46px;
-  height: 6px;
-  margin-left: -23px;
-  background: rgba(71, 85, 105, 0.3);
+  bottom: 4px;
+  width: 52px;
+  height: 7px;
+  margin-left: -26px;
+  background: rgba(71, 85, 105, 0.32);
 }
 
-/* 站定（串门/等待）：贴地小幅左右摇，不上下浮 */
+/* 站定（串门/等待）：与工位企鹅完全一致的上下呼吸，保证两种状态观感统一 */
 .walker-persona-penguin .pg-walk-core {
   transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: pg-idle-rock 1.7s steps(2, end) infinite;
-}
-
-@keyframes pg-idle-rock {
-  0%, 100% { transform: rotate(-1.5deg); }
-  50% { transform: rotate(1.5deg); }
+  animation: mascot-idle-bob 2.4s steps(1, end) infinite;
 }
 
 /* 走动：取消整张 svg 的上下颠簸，改企鹅左右摇摆踱步 */
