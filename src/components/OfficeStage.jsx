@@ -30,9 +30,373 @@ const WALK_SPEED = 72 // px/s，正常步行
 const RECALL_SPEED_MULTIPLIER = 2.8 // 被派活时快步赶回
 
 const PX = 6
+const DESKTOP_AGENT_PERSONAS = {
+  CLAUDE: 'claude-desktop',
+  CODEX: 'codex-pet',
+  PENGUIN: 'penguin',
+  XIAODU: 'xiaodu-robot',
+  RED_ORB: 'red-orb',
+}
 
 function px(col, row, w = 1, h = 1, cls) {
   return <rect x={col * PX} y={row * PX} width={w * PX} height={h * PX} className={cls} />
+}
+
+function isClaudeDesktopAgent(agent) {
+  return agent.persona === DESKTOP_AGENT_PERSONAS.CLAUDE
+}
+
+function isCodexPetAgent(agent) {
+  return agent.persona === DESKTOP_AGENT_PERSONAS.CODEX
+}
+
+function isPenguinAgent(agent) {
+  return agent.persona === DESKTOP_AGENT_PERSONAS.PENGUIN
+}
+
+function isXiaoduRobotAgent(agent) {
+  return agent.persona === DESKTOP_AGENT_PERSONAS.XIAODU
+}
+
+function isRedOrbAgent(agent) {
+  return agent.persona === DESKTOP_AGENT_PERSONAS.RED_ORB
+}
+
+function StatusBadges() {
+  return (
+    <>
+      <g className="fig-badge fig-badge-done">
+        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
+        <g className="fig-badge-glyph">
+          <rect x="105" y="35" width="3" height="3" />
+          <rect x="108" y="38" width="3" height="3" />
+          <rect x="111" y="35" width="3" height="3" />
+          <rect x="114" y="32" width="3" height="3" />
+          <rect x="117" y="29" width="3" height="3" />
+        </g>
+      </g>
+      <g className="fig-badge fig-badge-waiting">
+        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
+        <g className="fig-badge-glyph">
+          <rect x="109" y="28" width="9" height="3" />
+          <rect x="106" y="31" width="3" height="3" />
+          <rect x="118" y="31" width="3" height="3" />
+          <rect x="118" y="34" width="3" height="3" />
+          <rect x="115" y="37" width="3" height="3" />
+          <rect x="112" y="40" width="3" height="3" />
+          <rect x="112" y="45" width="3" height="3" />
+        </g>
+      </g>
+      <g className="fig-badge fig-badge-failed">
+        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
+        <g className="fig-badge-glyph">
+          <rect x="111" y="30" width="4" height="11" />
+          <rect x="111" y="44" width="4" height="4" />
+        </g>
+      </g>
+    </>
+  )
+}
+
+function ClaudeDesktopCharacter({ agent }) {
+  return (
+    <svg
+      className={[
+        'figure-svg',
+        'figure-persona-claude',
+        `figure-state-${agent.state}`,
+      ].join(' ')}
+      viewBox="0 0 150 126"
+      style={{
+        '--accent': agent.accent,
+        '--accent-dark': agent.darkAccent,
+      }}
+      role="img"
+      aria-label={`${agent.name} · ${agentStatusText(agent)}`}
+    >
+      <rect className="fig-ground" x="24" y="113" width="102" height="7" />
+
+      <g className="claude-window" aria-hidden="true">
+        <rect className="claude-window-shadow" x="29" y="17" width="92" height="72" />
+        <rect className="claude-window-panel" x="25" y="13" width="92" height="72" />
+        <rect className="claude-window-bar" x="25" y="13" width="92" height="11" />
+        <rect className="claude-window-dot" x="31" y="17" width="4" height="4" />
+        <rect className="claude-window-dot" x="39" y="17" width="4" height="4" />
+        <rect className="claude-window-dot" x="47" y="17" width="4" height="4" />
+        <g className="claude-terminal-lines">
+          <rect x="36" y="34" width="42" height="4" />
+          <rect x="36" y="44" width="56" height="4" />
+          <rect x="36" y="54" width="33" height="4" />
+          <rect className="claude-terminal-cursor" x="73" y="54" width="5" height="4" />
+        </g>
+      </g>
+
+      <g className="claude-agent-core">
+        <g className="claude-agent-body">
+          <rect className="claude-arm claude-arm-left" x="20" y="56" width="22" height="17" />
+          <rect className="claude-arm claude-arm-right" x="108" y="56" width="22" height="17" />
+          <rect className="claude-torso" x="42" y="35" width="66" height="60" />
+          <rect className="claude-leg claude-leg-1" x="42" y="95" width="12" height="22" />
+          <rect className="claude-leg claude-leg-2" x="61" y="95" width="12" height="22" />
+          <rect className="claude-leg claude-leg-3" x="86" y="95" width="12" height="22" />
+          <rect className="claude-leg claude-leg-4" x="105" y="95" width="12" height="22" />
+          <rect className="claude-eye claude-eye-left" x="58" y="48" width="10" height="10" />
+          <rect className="claude-eye claude-eye-right" x="90" y="48" width="10" height="10" />
+        </g>
+        <g className="claude-thought-pixels">
+          <rect className="claude-thought claude-thought-1" x="64" y="24" width="7" height="7" />
+          <rect className="claude-thought claude-thought-2" x="78" y="21" width="5" height="5" />
+          <rect className="claude-thought claude-thought-3" x="91" y="25" width="6" height="6" />
+        </g>
+      </g>
+
+      <g className="claude-work-pixels">
+        <rect className="claude-work-pixel claude-work-pixel-1" x="43" y="31" width="5" height="5" />
+        <rect className="claude-work-pixel claude-work-pixel-2" x="111" y="43" width="6" height="6" />
+        <rect className="claude-work-pixel claude-work-pixel-3" x="31" y="82" width="5" height="5" />
+      </g>
+
+      <StatusBadges />
+    </svg>
+  )
+}
+
+function CodexPetCharacter({ agent }) {
+  return (
+    <svg
+      className={[
+        'figure-svg',
+        'figure-persona-codex',
+        `figure-state-${agent.state}`,
+      ].join(' ')}
+      viewBox="0 0 150 126"
+      style={{
+        '--accent': agent.accent,
+        '--accent-dark': agent.darkAccent,
+      }}
+      role="img"
+      aria-label={`${agent.name} · ${agentStatusText(agent)}`}
+    >
+      <rect className="fig-ground" x="27" y="113" width="96" height="7" />
+
+      <g className="codex-terminal-card" aria-hidden="true">
+        <rect className="codex-terminal-shadow" x="30" y="74" width="90" height="27" />
+        <rect className="codex-terminal-panel" x="27" y="70" width="90" height="27" />
+        <rect className="codex-terminal-line codex-terminal-line-1" x="39" y="79" width="34" height="4" />
+        <rect className="codex-terminal-line codex-terminal-line-2" x="39" y="88" width="52" height="4" />
+        <rect className="codex-terminal-cursor" x="96" y="88" width="8" height="4" />
+      </g>
+
+      <g className="codex-pet-core">
+        <g className="codex-pet-head">
+          <circle className="codex-cloud codex-cloud-1" cx="50" cy="37" r="18" />
+          <circle className="codex-cloud codex-cloud-2" cx="68" cy="27" r="20" />
+          <circle className="codex-cloud codex-cloud-3" cx="91" cy="33" r="18" />
+          <circle className="codex-cloud codex-cloud-4" cx="101" cy="51" r="17" />
+          <circle className="codex-cloud codex-cloud-5" cx="49" cy="55" r="17" />
+          <rect className="codex-cloud codex-cloud-body" x="43" y="31" width="66" height="42" rx="18" />
+          <rect className="codex-face-screen" x="52" y="41" width="52" height="25" rx="7" />
+          <path className="codex-face-prompt" d="M 62 47 L 70 53 L 62 59" />
+          <rect className="codex-face-cursor" x="83" y="53" width="13" height="4" />
+        </g>
+
+        <rect className="codex-arm codex-arm-left" x="37" y="77" width="13" height="23" rx="6" />
+        <rect className="codex-arm codex-arm-right" x="100" y="77" width="13" height="23" rx="6" />
+        <rect className="codex-body" x="51" y="73" width="48" height="34" rx="10" />
+        <rect className="codex-body-highlight" x="64" y="83" width="24" height="5" rx="2" />
+        <path className="codex-body-prompt" d="M 60 84 L 66 88 L 60 92" />
+        <rect className="codex-leg codex-leg-left" x="57" y="104" width="14" height="13" rx="3" />
+        <rect className="codex-leg codex-leg-right" x="82" y="104" width="14" height="13" rx="3" />
+      </g>
+
+      <g className="codex-orbit-pixels">
+        <rect className="codex-orbit codex-orbit-1" x="41" y="22" width="6" height="6" />
+        <rect className="codex-orbit codex-orbit-2" x="106" y="28" width="5" height="5" />
+        <rect className="codex-orbit codex-orbit-3" x="111" y="68" width="6" height="6" />
+      </g>
+
+      <StatusBadges />
+    </svg>
+  )
+}
+
+function PenguinCharacter({ agent }) {
+  return (
+    <svg
+      className={[
+        'figure-svg',
+        'figure-persona-penguin',
+        `figure-state-${agent.state}`,
+      ].join(' ')}
+      viewBox="0 0 150 126"
+      style={{
+        '--accent': agent.accent,
+        '--accent-dark': agent.darkAccent,
+      }}
+      role="img"
+      aria-label={`${agent.name} · ${agentStatusText(agent)}`}
+    >
+      <rect className="fig-ground" x="25" y="113" width="100" height="7" />
+
+      <g className="penguin-doc-card" aria-hidden="true">
+        <rect className="penguin-doc-shadow" x="83" y="45" width="35" height="48" />
+        <rect className="penguin-doc-page" x="80" y="42" width="35" height="48" />
+        <rect className="penguin-doc-line penguin-doc-line-1" x="87" y="53" width="18" height="4" />
+        <rect className="penguin-doc-line penguin-doc-line-2" x="87" y="63" width="22" height="4" />
+        <rect className="penguin-doc-line penguin-doc-line-3" x="87" y="73" width="14" height="4" />
+      </g>
+
+      <g className="penguin-core">
+        <ellipse className="penguin-foot penguin-foot-left" cx="51" cy="110" rx="21" ry="8" />
+        <ellipse className="penguin-foot penguin-foot-right" cx="97" cy="110" rx="21" ry="8" />
+        <ellipse className="penguin-body-dark" cx="75" cy="65" rx="45" ry="52" />
+        <ellipse className="penguin-belly" cx="77" cy="82" rx="31" ry="30" />
+        <path className="penguin-flipper penguin-flipper-left" d="M 33 69 L 14 85 L 22 107 L 43 92 Z" />
+        <path className="penguin-flipper penguin-flipper-right" d="M 116 69 L 136 86 L 127 107 L 106 92 Z" />
+        <g className="penguin-face">
+          <ellipse className="penguin-eye-white" cx="62" cy="42" rx="13" ry="17" />
+          <ellipse className="penguin-eye-white" cx="88" cy="42" rx="13" ry="17" />
+          <rect className="penguin-eye-pupil" x="65" y="39" width="7" height="9" rx="2" />
+          <path className="penguin-eye-wink" d="M 83 42 Q 88 36 94 42" />
+          <path className="penguin-beak-top" d="M 43 62 L 105 61 L 116 69 L 104 76 L 45 76 L 34 69 Z" />
+          <path className="penguin-beak-smile" d="M 51 69 Q 75 77 101 69" />
+        </g>
+        <g className="penguin-scarf">
+          <path className="penguin-scarf-wrap" d="M 28 63 C 48 78 103 79 124 63 L 120 82 C 95 96 54 95 31 81 Z" />
+          <path className="penguin-scarf-tail" d="M 50 78 L 70 82 L 63 116 L 43 111 Z" />
+          <path className="penguin-scarf-shadow" d="M 39 77 C 57 87 95 88 112 77" />
+        </g>
+      </g>
+
+      <g className="penguin-bubbles" aria-hidden="true">
+        <g className="penguin-bubble penguin-bubble-code">
+          <circle cx="39" cy="23" r="13" />
+          <text x="39" y="28">{'{ }'}</text>
+        </g>
+        <g className="penguin-bubble penguin-bubble-heart">
+          <circle cx="112" cy="24" r="12" />
+          <path d="M 106 22 C 106 18 112 18 112 22 C 112 18 119 18 119 23 C 119 28 112 32 112 32 C 112 32 106 28 106 22 Z" />
+        </g>
+        <g className="penguin-bubble penguin-bubble-star">
+          <circle cx="124" cy="62" r="11" />
+          <path d="M 124 53 L 127 60 L 134 60 L 128 64 L 130 71 L 124 67 L 118 71 L 120 64 L 114 60 L 121 60 Z" />
+        </g>
+      </g>
+
+      <StatusBadges />
+    </svg>
+  )
+}
+
+function XiaoduRobotCharacter({ agent }) {
+  return (
+    <svg
+      className={[
+        'figure-svg',
+        'figure-persona-xiaodu',
+        `figure-state-${agent.state}`,
+      ].join(' ')}
+      viewBox="0 0 150 126"
+      style={{
+        '--accent': agent.accent,
+        '--accent-dark': agent.darkAccent,
+      }}
+      role="img"
+      aria-label={`${agent.name} · ${agentStatusText(agent)}`}
+    >
+      <ellipse className="xiaodu-base-glow" cx="75" cy="116" rx="43" ry="8" />
+      <rect className="fig-ground" x="35" y="115" width="80" height="6" />
+
+      <g className="xiaodu-schedule-card" aria-hidden="true">
+        <rect className="xiaodu-card-shadow" x="26" y="57" width="31" height="37" />
+        <rect className="xiaodu-card-panel" x="23" y="54" width="31" height="37" />
+        <rect className="xiaodu-card-line xiaodu-card-line-1" x="30" y="64" width="16" height="3" />
+        <rect className="xiaodu-card-line xiaodu-card-line-2" x="30" y="73" width="12" height="3" />
+        <rect className="xiaodu-card-dot" x="44" y="72" width="4" height="4" />
+      </g>
+
+      <g className="xiaodu-core">
+        <g className="xiaodu-head">
+          <rect className="xiaodu-head-shell" x="44" y="14" width="72" height="46" rx="18" />
+          <rect className="xiaodu-head-screen" x="51" y="21" width="58" height="31" rx="9" />
+          <rect className="xiaodu-face-bar" x="65" y="30" width="6" height="18" rx="1" />
+          <path className="xiaodu-face-chevron" d="M 91 29 L 80 37 L 91 45" />
+          <rect className="xiaodu-head-neck" x="62" y="58" width="31" height="8" />
+        </g>
+        <path className="xiaodu-body" d="M 52 64 L 99 64 L 108 105 Q 75 119 43 105 Z" />
+        <rect className="xiaodu-chest-screen" x="61" y="70" width="31" height="17" rx="3" />
+        <rect className="xiaodu-chest-dot xiaodu-chest-dot-1" x="68" y="77" width="3" height="3" />
+        <rect className="xiaodu-chest-dot xiaodu-chest-dot-2" x="76" y="77" width="3" height="3" />
+        <rect className="xiaodu-chest-dot xiaodu-chest-dot-3" x="84" y="77" width="3" height="3" />
+        <text className="xiaodu-body-mark" x="75" y="100">du</text>
+        <path className="xiaodu-arm xiaodu-arm-left" d="M 48 66 L 37 85 L 40 102 L 48 99 L 52 79 Z" />
+        <path className="xiaodu-arm xiaodu-arm-right" d="M 101 66 L 113 85 L 109 102 L 101 99 L 97 79 Z" />
+        <rect className="xiaodu-foot xiaodu-foot-left" x="54" y="107" width="21" height="7" rx="3" />
+        <rect className="xiaodu-foot xiaodu-foot-right" x="76" y="107" width="21" height="7" rx="3" />
+      </g>
+
+      <g className="xiaodu-signal-pixels" aria-hidden="true">
+        <rect className="xiaodu-signal xiaodu-signal-1" x="111" y="29" width="5" height="5" />
+        <rect className="xiaodu-signal xiaodu-signal-2" x="119" y="23" width="4" height="4" />
+        <rect className="xiaodu-signal xiaodu-signal-3" x="123" y="35" width="5" height="5" />
+      </g>
+
+      <StatusBadges />
+    </svg>
+  )
+}
+
+function RedOrbCharacter({ agent }) {
+  return (
+    <svg
+      className={[
+        'figure-svg',
+        'figure-persona-redorb',
+        `figure-state-${agent.state}`,
+      ].join(' ')}
+      viewBox="0 0 150 126"
+      style={{
+        '--accent': agent.accent,
+        '--accent-dark': agent.darkAccent,
+      }}
+      role="img"
+      aria-label={`${agent.name} · ${agentStatusText(agent)}`}
+    >
+      <ellipse className="redorb-glow" cx="76" cy="113" rx="45" ry="10" />
+      <rect className="fig-ground" x="34" y="115" width="84" height="6" />
+
+      <g className="redorb-app-panel" aria-hidden="true">
+        <rect className="redorb-panel-shadow" x="29" y="64" width="33" height="33" />
+        <rect className="redorb-panel" x="26" y="61" width="33" height="33" />
+        <rect className="redorb-app-dot redorb-app-dot-1" x="34" y="69" width="7" height="7" rx="2" />
+        <rect className="redorb-app-dot redorb-app-dot-2" x="46" y="69" width="7" height="7" rx="2" />
+        <rect className="redorb-app-dot redorb-app-dot-3" x="34" y="81" width="7" height="7" rx="2" />
+        <rect className="redorb-app-dot redorb-app-dot-4" x="46" y="81" width="7" height="7" rx="2" />
+      </g>
+
+      <g className="redorb-core">
+        <path className="redorb-antenna redorb-antenna-left" d="M 58 24 C 54 14 48 13 44 16" />
+        <path className="redorb-antenna redorb-antenna-right" d="M 94 24 C 99 14 105 13 109 16" />
+        <circle className="redorb-body" cx="76" cy="65" r="43" />
+        <circle className="redorb-cheek redorb-cheek-left" cx="38" cy="61" r="13" />
+        <circle className="redorb-cheek redorb-cheek-right" cx="114" cy="61" r="13" />
+        <circle className="redorb-eye redorb-eye-left" cx="63" cy="52" r="6" />
+        <circle className="redorb-eye redorb-eye-right" cx="90" cy="52" r="6" />
+        <circle className="redorb-eye-light redorb-eye-light-left" cx="61" cy="50" r="2" />
+        <circle className="redorb-eye-light redorb-eye-light-right" cx="88" cy="50" r="2" />
+        <rect className="redorb-foot redorb-foot-left" x="62" y="104" width="11" height="15" rx="2" />
+        <rect className="redorb-foot redorb-foot-right" x="80" y="104" width="11" height="15" rx="2" />
+      </g>
+
+      <g className="redorb-sparks" aria-hidden="true">
+        <rect className="redorb-spark redorb-spark-1" x="42" y="30" width="5" height="5" />
+        <rect className="redorb-spark redorb-spark-2" x="109" y="34" width="4" height="4" />
+        <rect className="redorb-spark redorb-spark-3" x="119" y="76" width="5" height="5" />
+      </g>
+
+      <StatusBadges />
+    </svg>
+  )
 }
 
 /**
@@ -41,6 +405,12 @@ function px(col, row, w = 1, h = 1, cls) {
  */
 function AgentCharacter({ agent }) {
   const supervisor = Boolean(agent.supervisor)
+  if (isClaudeDesktopAgent(agent)) return <ClaudeDesktopCharacter agent={agent} />
+  if (isCodexPetAgent(agent)) return <CodexPetCharacter agent={agent} />
+  if (isPenguinAgent(agent)) return <PenguinCharacter agent={agent} />
+  if (isXiaoduRobotAgent(agent)) return <XiaoduRobotCharacter agent={agent} />
+  if (isRedOrbAgent(agent)) return <RedOrbCharacter agent={agent} />
+
   return (
     <svg
       className={[
@@ -144,35 +514,7 @@ function AgentCharacter({ agent }) {
       </g>
 
       {/* 状态徽章（像素方块 + 点阵图标） */}
-      <g className="fig-badge fig-badge-done">
-        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
-        <g className="fig-badge-glyph">
-          <rect x="105" y="35" width="3" height="3" />
-          <rect x="108" y="38" width="3" height="3" />
-          <rect x="111" y="35" width="3" height="3" />
-          <rect x="114" y="32" width="3" height="3" />
-          <rect x="117" y="29" width="3" height="3" />
-        </g>
-      </g>
-      <g className="fig-badge fig-badge-waiting">
-        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
-        <g className="fig-badge-glyph">
-          <rect x="109" y="28" width="9" height="3" />
-          <rect x="106" y="31" width="3" height="3" />
-          <rect x="118" y="31" width="3" height="3" />
-          <rect x="118" y="34" width="3" height="3" />
-          <rect x="115" y="37" width="3" height="3" />
-          <rect x="112" y="40" width="3" height="3" />
-          <rect x="112" y="45" width="3" height="3" />
-        </g>
-      </g>
-      <g className="fig-badge fig-badge-failed">
-        <rect className="fig-badge-bg" x="102" y="26" width="22" height="22" />
-        <g className="fig-badge-glyph">
-          <rect x="111" y="30" width="4" height="11" />
-          <rect x="111" y="44" width="4" height="4" />
-        </g>
-      </g>
+      <StatusBadges />
 
       {/* 主控雷达环（routing 时扩散的像素方框） */}
       {supervisor ? (
@@ -185,8 +527,131 @@ function AgentCharacter({ agent }) {
   )
 }
 
+function ClaudeWalkerSprite() {
+  return (
+    <svg className="walker-svg walker-persona-claude" viewBox="0 0 90 102" aria-hidden="true">
+      <rect className="claude-walker-arm claude-walker-arm-l" x="12" y="38" width="18" height="14" />
+      <rect className="claude-walker-arm claude-walker-arm-r" x="60" y="38" width="18" height="14" />
+      <rect className="claude-walker-body" x="27" y="20" width="36" height="46" />
+      <rect className="claude-walker-eye" x="37" y="31" width="7" height="7" />
+      <rect className="claude-walker-eye" x="51" y="31" width="7" height="7" />
+      <g className="claude-walker-leg-l">
+        <rect className="claude-walker-leg" x="29" y="66" width="9" height="20" />
+        <rect className="claude-walker-leg" x="41" y="66" width="8" height="20" />
+      </g>
+      <g className="claude-walker-leg-r">
+        <rect className="claude-walker-leg" x="52" y="66" width="8" height="20" />
+        <rect className="claude-walker-leg" x="62" y="66" width="9" height="20" />
+      </g>
+      <rect className="claude-walker-cursor" x="36" y="7" width="6" height="6" />
+      <rect className="claude-walker-cursor claude-walker-cursor-2" x="49" y="11" width="5" height="5" />
+    </svg>
+  )
+}
+
+function CodexWalkerSprite() {
+  return (
+    <svg className="walker-svg walker-persona-codex" viewBox="0 0 90 102" aria-hidden="true">
+      <g className="codex-walker-core">
+        <circle className="codex-walker-cloud codex-walker-cloud-1" cx="30" cy="24" r="12" />
+        <circle className="codex-walker-cloud codex-walker-cloud-2" cx="43" cy="17" r="14" />
+        <circle className="codex-walker-cloud codex-walker-cloud-3" cx="58" cy="24" r="12" />
+        <circle className="codex-walker-cloud codex-walker-cloud-4" cx="60" cy="38" r="12" />
+        <circle className="codex-walker-cloud codex-walker-cloud-5" cx="28" cy="38" r="12" />
+        <rect className="codex-walker-cloud codex-walker-cloud-body" x="26" y="22" width="38" height="29" rx="12" />
+        <rect className="codex-walker-face" x="32" y="29" width="28" height="15" rx="4" />
+        <path className="codex-walker-prompt" d="M 37 33 L 42 36.5 L 37 40" />
+        <rect className="codex-walker-cursor" x="49" y="37" width="7" height="3" />
+        <rect className="codex-walker-arm codex-walker-arm-l" x="21" y="54" width="9" height="18" rx="4" />
+        <rect className="codex-walker-arm codex-walker-arm-r" x="60" y="54" width="9" height="18" rx="4" />
+        <rect className="codex-walker-body" x="32" y="51" width="29" height="25" rx="8" />
+        <rect className="codex-walker-body-mark" x="42" y="59" width="9" height="4" rx="2" />
+        <g className="codex-walker-leg-l">
+          <rect className="codex-walker-leg" x="36" y="74" width="8" height="13" rx="2" />
+        </g>
+        <g className="codex-walker-leg-r">
+          <rect className="codex-walker-leg" x="50" y="74" width="8" height="13" rx="2" />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+function PenguinWalkerSprite() {
+  return (
+    <svg className="walker-svg walker-persona-penguin" viewBox="0 0 90 102" aria-hidden="true">
+      <g className="penguin-walker-core">
+        <ellipse className="penguin-walker-foot penguin-walker-foot-left" cx="32" cy="88" rx="13" ry="5" />
+        <ellipse className="penguin-walker-foot penguin-walker-foot-right" cx="58" cy="88" rx="13" ry="5" />
+        <ellipse className="penguin-walker-body-dark" cx="45" cy="47" rx="28" ry="35" />
+        <ellipse className="penguin-walker-belly" cx="46" cy="61" rx="19" ry="19" />
+        <path className="penguin-walker-flipper penguin-walker-flipper-left" d="M 20 50 L 9 61 L 14 77 L 26 67 Z" />
+        <path className="penguin-walker-flipper penguin-walker-flipper-right" d="M 70 50 L 81 61 L 76 77 L 64 67 Z" />
+        <ellipse className="penguin-walker-eye-white" cx="37" cy="31" rx="8" ry="10" />
+        <ellipse className="penguin-walker-eye-white" cx="53" cy="31" rx="8" ry="10" />
+        <rect className="penguin-walker-eye-pupil" x="39" y="30" width="4" height="5" rx="1" />
+        <path className="penguin-walker-eye-wink" d="M 50 31 Q 53 27 57 31" />
+        <path className="penguin-walker-beak" d="M 27 43 L 62 42 L 69 47 L 62 52 L 28 52 L 21 47 Z" />
+        <g className="penguin-walker-scarf">
+          <path className="penguin-walker-scarf-wrap" d="M 18 44 C 31 54 59 55 72 44 L 69 56 C 54 65 36 65 21 56 Z" />
+          <path className="penguin-walker-scarf-tail" d="M 32 55 L 44 58 L 39 82 L 27 78 Z" />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+function XiaoduWalkerSprite() {
+  return (
+    <svg className="walker-svg walker-persona-xiaodu" viewBox="0 0 90 102" aria-hidden="true">
+      <ellipse className="xiaodu-walker-base-glow" cx="45" cy="90" rx="25" ry="5" />
+      <g className="xiaodu-walker-core">
+        <rect className="xiaodu-walker-head-shell" x="22" y="8" width="46" height="31" rx="12" />
+        <rect className="xiaodu-walker-head-screen" x="27" y="13" width="36" height="20" rx="6" />
+        <rect className="xiaodu-walker-face-bar" x="36" y="19" width="4" height="11" rx="1" />
+        <path className="xiaodu-walker-face-chevron" d="M 53 18 L 46 23 L 53 29" />
+        <rect className="xiaodu-walker-neck" x="35" y="38" width="19" height="6" />
+        <path className="xiaodu-walker-body" d="M 30 43 L 59 43 L 65 75 Q 45 84 25 75 Z" />
+        <rect className="xiaodu-walker-chest" x="37" y="49" width="18" height="11" rx="2" />
+        <rect className="xiaodu-walker-chest-dot" x="44" y="54" width="3" height="3" />
+        <path className="xiaodu-walker-arm xiaodu-walker-arm-l" d="M 29 45 L 20 59 L 23 73 L 30 68 Z" />
+        <path className="xiaodu-walker-arm xiaodu-walker-arm-r" d="M 60 45 L 70 59 L 67 73 L 60 68 Z" />
+        <rect className="xiaodu-walker-foot xiaodu-walker-foot-l" x="33" y="76" width="13" height="6" rx="3" />
+        <rect className="xiaodu-walker-foot xiaodu-walker-foot-r" x="47" y="76" width="13" height="6" rx="3" />
+      </g>
+    </svg>
+  )
+}
+
+function RedOrbWalkerSprite() {
+  return (
+    <svg className="walker-svg walker-persona-redorb" viewBox="0 0 90 102" aria-hidden="true">
+      <ellipse className="redorb-walker-glow" cx="45" cy="88" rx="26" ry="6" />
+      <g className="redorb-walker-core">
+        <path className="redorb-walker-antenna redorb-walker-antenna-left" d="M 34 21 C 31 14 27 13 24 16" />
+        <path className="redorb-walker-antenna redorb-walker-antenna-right" d="M 56 21 C 60 14 64 13 67 16" />
+        <circle className="redorb-walker-body" cx="45" cy="52" r="28" />
+        <circle className="redorb-walker-cheek redorb-walker-cheek-left" cx="19" cy="50" r="8" />
+        <circle className="redorb-walker-cheek redorb-walker-cheek-right" cx="71" cy="50" r="8" />
+        <circle className="redorb-walker-eye" cx="37" cy="44" r="4" />
+        <circle className="redorb-walker-eye" cx="54" cy="44" r="4" />
+        <circle className="redorb-walker-eye-light" cx="36" cy="43" r="1.5" />
+        <circle className="redorb-walker-eye-light" cx="53" cy="43" r="1.5" />
+        <rect className="redorb-walker-foot redorb-walker-foot-l" x="36" y="76" width="8" height="11" rx="2" />
+        <rect className="redorb-walker-foot redorb-walker-foot-r" x="48" y="76" width="8" height="11" rx="2" />
+      </g>
+    </svg>
+  )
+}
+
 /** 全身像素小人（带腿），用于在工区内走动。配色沿用工位调色板类名。 */
-function WalkerSprite() {
+function WalkerSprite({ agent }) {
+  if (isClaudeDesktopAgent(agent)) return <ClaudeWalkerSprite />
+  if (isCodexPetAgent(agent)) return <CodexWalkerSprite />
+  if (isPenguinAgent(agent)) return <PenguinWalkerSprite />
+  if (isXiaoduRobotAgent(agent)) return <XiaoduWalkerSprite />
+  if (isRedOrbAgent(agent)) return <RedOrbWalkerSprite />
+
   return (
     <svg className="walker-svg" viewBox="0 0 90 102" aria-hidden="true">
       {px(5, 0, 5, 1, 'fig-hair')}
@@ -406,6 +871,7 @@ export function WalkerLayer({ walkers, agents }) {
             className={[
               'walker',
               walker.walking ? 'walker-walking' : '',
+              agent.persona ? `walker-persona-${agent.persona}` : '',
             ].filter(Boolean).join(' ')}
             style={{
               transform: `translate(${walker.x}px, ${walker.y}px)`,
@@ -418,7 +884,7 @@ export function WalkerLayer({ walkers, agents }) {
             {walker.bubble ? <PixelBubble kind={walker.bubble} /> : null}
             <span className="walker-shadow-strip" />
             <span className="walker-flip" style={{ transform: `scaleX(${walker.facing})` }}>
-              <WalkerSprite />
+              <WalkerSprite agent={agent} />
             </span>
           </div>
         )
@@ -670,6 +1136,7 @@ export function AgentStation({ agent, selected, onSelect, stagger = 0, away = fa
       className={[
         'agent-station',
         agent.supervisor ? 'agent-station-main' : '',
+        agent.persona ? `agent-station-persona-${agent.persona}` : '',
         selected ? 'agent-station-selected' : '',
         away ? 'agent-station-away' : '',
         acting === 'stretch' ? 'agent-station-stretch' : '',

@@ -655,7 +655,7 @@ button {
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: min(100%, 190px);
+  width: min(100%, 150px);
   transform: translateX(-50%);
   overflow: visible;
   shape-rendering: crispEdges;
@@ -663,6 +663,31 @@ button {
 
 .agent-station-main .figure-svg {
   width: min(100%, 215px);
+}
+
+.agent-station-persona-claude-desktop .figure-svg {
+  width: min(100%, 150px);
+}
+
+.agent-station-persona-codex-pet .figure-svg {
+  width: min(100%, 150px);
+}
+
+.agent-station-persona-penguin .figure-svg {
+  width: min(100%, 150px);
+}
+
+.agent-station-persona-xiaodu-robot .figure-svg {
+  width: min(100%, 150px);
+}
+
+.agent-station-persona-red-orb .figure-svg {
+  width: min(100%, 150px);
+}
+
+.agent-station-reserved.agent-station-persona-xiaodu-robot .agent-station-art {
+  opacity: 0.86;
+  filter: saturate(0.78);
 }
 
 .figure-svg * {
@@ -953,6 +978,1018 @@ button {
 @keyframes fig-radar-ping {
   0% { opacity: 0.5; transform: scale(0.5); }
   100% { opacity: 0; transform: scale(1.4); }
+}
+
+/* —— 桌面 Agent 形象：Claude 风格像素体 + 终端陪跑动画 —— */
+
+.figure-persona-claude .fig-ground {
+  fill: rgba(175, 90, 65, 0.22);
+}
+
+.claude-window {
+  opacity: 0.86;
+  transform: translateY(3px);
+}
+
+.claude-window-shadow {
+  fill: rgba(15, 23, 42, 0.16);
+}
+
+.claude-window-panel {
+  fill: rgba(255, 249, 244, 0.94);
+  stroke: rgba(175, 90, 65, 0.34);
+  stroke-width: 2;
+}
+
+.claude-window-bar {
+  fill: rgba(175, 90, 65, 0.16);
+}
+
+.claude-window-dot {
+  fill: var(--accent);
+  opacity: 0.72;
+}
+
+.claude-terminal-lines rect {
+  fill: rgba(78, 56, 45, 0.46);
+}
+
+.claude-terminal-cursor,
+.claude-walker-cursor {
+  fill: #22201d;
+  animation: claude-cursor-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes claude-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.18; }
+}
+
+.claude-agent-core {
+  animation: claude-idle-bob 2.2s steps(1, end) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
+}
+
+@keyframes claude-idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.claude-torso,
+.claude-arm,
+.claude-leg,
+.claude-walker-body,
+.claude-walker-arm,
+.claude-walker-leg {
+  fill: var(--accent);
+}
+
+.claude-torso,
+.claude-arm,
+.claude-leg {
+  transition: fill 280ms ease;
+}
+
+.claude-eye,
+.claude-walker-eye {
+  fill: #111111;
+}
+
+.claude-eye {
+  animation: claude-eye-blink 5.2s steps(1, end) infinite;
+  animation-delay: calc(var(--agent-stagger, 0s) * 1.6);
+}
+
+@keyframes claude-eye-blink {
+  0%, 91%, 96%, 100% { transform: scaleY(1); }
+  92%, 95% { transform: scaleY(0.24); }
+}
+
+.claude-thought,
+.claude-work-pixel {
+  fill: var(--accent-dark);
+  opacity: 0;
+}
+
+.figure-persona-claude.figure-state-idle .claude-thought {
+  animation: claude-thought-pop 2.9s steps(1, end) infinite;
+}
+
+.figure-persona-claude.figure-state-idle .claude-thought-2 {
+  animation-delay: 0.35s;
+}
+
+.figure-persona-claude.figure-state-idle .claude-thought-3 {
+  animation-delay: 0.7s;
+}
+
+@keyframes claude-thought-pop {
+  0%, 24%, 100% { opacity: 0; transform: translateY(4px); }
+  35%, 62% { opacity: 0.8; transform: translateY(0); }
+}
+
+.figure-persona-claude.figure-state-working .claude-agent-core {
+  animation: claude-working-pulse 0.7s steps(1, end) infinite;
+}
+
+@keyframes claude-working-pulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.025); }
+}
+
+.figure-persona-claude.figure-state-working .claude-terminal-lines rect:not(.claude-terminal-cursor) {
+  animation: claude-line-scan 1.2s steps(1, end) infinite;
+}
+
+.figure-persona-claude.figure-state-working .claude-terminal-lines rect:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.figure-persona-claude.figure-state-working .claude-terminal-lines rect:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes claude-line-scan {
+  0%, 100% { opacity: 0.34; transform: translateX(0); }
+  50% { opacity: 0.9; transform: translateX(4px); }
+}
+
+.figure-persona-claude.figure-state-working .claude-work-pixel {
+  animation: claude-work-orbit 1.5s steps(7, end) infinite;
+}
+
+.figure-persona-claude.figure-state-working .claude-work-pixel-2 {
+  animation-delay: 0.38s;
+}
+
+.figure-persona-claude.figure-state-working .claude-work-pixel-3 {
+  animation-delay: 0.76s;
+}
+
+@keyframes claude-work-orbit {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(-24px); }
+}
+
+.figure-persona-claude.figure-state-waiting .claude-arm-right {
+  animation: claude-arm-wave 0.82s steps(1, end) infinite;
+  fill: #f59e0b;
+}
+
+.figure-persona-claude.figure-state-waiting .claude-torso,
+.figure-persona-claude.figure-state-waiting .claude-leg,
+.figure-persona-claude.figure-state-waiting .claude-arm-left {
+  fill: color-mix(in srgb, var(--accent) 72%, #f59e0b);
+}
+
+@keyframes claude-arm-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+.figure-persona-claude.figure-state-failed .claude-agent-core {
+  animation: claude-error-shake 0.36s steps(2, end) 3;
+}
+
+.figure-persona-claude.figure-state-failed .claude-torso,
+.figure-persona-claude.figure-state-failed .claude-arm,
+.figure-persona-claude.figure-state-failed .claude-leg {
+  fill: #dc2626;
+}
+
+@keyframes claude-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* —— 桌面 Agent 形象：Codex 宠物云朵终端 —— */
+
+.figure-persona-codex .fig-ground {
+  fill: rgba(91, 140, 255, 0.2);
+}
+
+.codex-terminal-card {
+  opacity: 0.86;
+}
+
+.codex-terminal-shadow {
+  fill: rgba(15, 23, 42, 0.13);
+}
+
+.codex-terminal-panel {
+  fill: rgba(236, 245, 255, 0.86);
+  stroke: rgba(91, 140, 255, 0.26);
+  stroke-width: 2;
+}
+
+.codex-terminal-line {
+  fill: rgba(51, 103, 214, 0.42);
+}
+
+.codex-terminal-cursor,
+.codex-face-cursor,
+.codex-walker-cursor {
+  fill: #8ee6ff;
+  animation: codex-cursor-blink 0.95s steps(1, end) infinite;
+}
+
+@keyframes codex-cursor-blink {
+  0%, 48% { opacity: 1; }
+  49%, 100% { opacity: 0.18; }
+}
+
+.codex-pet-core {
+  animation: codex-idle-bounce 2.15s steps(1, end) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
+}
+
+@keyframes codex-idle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.codex-cloud,
+.codex-walker-cloud {
+  fill: var(--accent);
+  stroke: var(--accent-dark);
+  stroke-width: 3;
+}
+
+.codex-cloud-2,
+.codex-cloud-3,
+.codex-walker-cloud-2,
+.codex-walker-cloud-3 {
+  fill: color-mix(in srgb, var(--accent) 80%, #cfe4ff);
+}
+
+.codex-face-screen,
+.codex-walker-face {
+  fill: #14284b;
+  stroke: #254a88;
+  stroke-width: 2;
+}
+
+.codex-face-prompt,
+.codex-body-prompt,
+.codex-walker-prompt {
+  fill: none;
+  stroke: #8ee6ff;
+  stroke-width: 4;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+.codex-body-prompt {
+  stroke-width: 3;
+}
+
+.codex-arm,
+.codex-body,
+.codex-leg,
+.codex-walker-arm,
+.codex-walker-body,
+.codex-walker-leg {
+  fill: var(--accent);
+  stroke: var(--accent-dark);
+  stroke-width: 2;
+}
+
+.codex-body-highlight,
+.codex-walker-body-mark {
+  fill: #b8d5ff;
+  opacity: 0.85;
+}
+
+.codex-orbit {
+  fill: #8ee6ff;
+  opacity: 0;
+}
+
+.figure-persona-codex.figure-state-idle .codex-orbit {
+  animation: codex-orbit-pop 2.6s steps(1, end) infinite;
+}
+
+.figure-persona-codex.figure-state-idle .codex-orbit-2 {
+  animation-delay: 0.35s;
+}
+
+.figure-persona-codex.figure-state-idle .codex-orbit-3 {
+  animation-delay: 0.7s;
+}
+
+@keyframes codex-orbit-pop {
+  0%, 25%, 100% { opacity: 0; transform: translateY(5px) scale(0.8); }
+  36%, 64% { opacity: 0.95; transform: translateY(0) scale(1); }
+}
+
+.figure-persona-codex.figure-state-working .codex-pet-core {
+  animation: codex-working-hop 0.62s steps(1, end) infinite;
+}
+
+@keyframes codex-working-hop {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.025); }
+}
+
+.figure-persona-codex.figure-state-working .codex-terminal-line {
+  animation: codex-terminal-scan 1.05s steps(1, end) infinite;
+}
+
+.figure-persona-codex.figure-state-working .codex-terminal-line-2 {
+  animation-delay: 0.3s;
+}
+
+@keyframes codex-terminal-scan {
+  0%, 100% { opacity: 0.36; transform: translateX(0); }
+  50% { opacity: 0.95; transform: translateX(5px); }
+}
+
+.figure-persona-codex.figure-state-working .codex-orbit {
+  animation: codex-work-spark 1.2s steps(6, end) infinite;
+}
+
+.figure-persona-codex.figure-state-working .codex-orbit-2 {
+  animation-delay: 0.25s;
+}
+
+.figure-persona-codex.figure-state-working .codex-orbit-3 {
+  animation-delay: 0.5s;
+}
+
+@keyframes codex-work-spark {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.figure-persona-codex.figure-state-waiting .codex-arm-right {
+  animation: codex-arm-wave 0.75s steps(1, end) infinite;
+  fill: #f59e0b;
+}
+
+.figure-persona-codex.figure-state-waiting .codex-body,
+.figure-persona-codex.figure-state-waiting .codex-leg,
+.figure-persona-codex.figure-state-waiting .codex-arm-left {
+  fill: color-mix(in srgb, var(--accent) 70%, #f59e0b);
+}
+
+@keyframes codex-arm-wave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(-8deg); }
+}
+
+.figure-persona-codex.figure-state-failed .codex-pet-core {
+  animation: codex-error-jolt 0.34s steps(2, end) 3;
+}
+
+.figure-persona-codex.figure-state-failed .codex-cloud,
+.figure-persona-codex.figure-state-failed .codex-body,
+.figure-persona-codex.figure-state-failed .codex-arm,
+.figure-persona-codex.figure-state-failed .codex-leg {
+  fill: #dc2626;
+  stroke: #991b1b;
+}
+
+@keyframes codex-error-jolt {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px) translateY(-2px); }
+  75% { transform: translateX(4px) translateY(2px); }
+}
+
+/* —— 桌面 Agent 形象：企鹅文书员 —— */
+
+.figure-persona-penguin .fig-ground {
+  fill: rgba(239, 68, 68, 0.18);
+}
+
+.penguin-doc-card {
+  opacity: 0.9;
+}
+
+.penguin-doc-shadow {
+  fill: rgba(15, 23, 42, 0.14);
+}
+
+.penguin-doc-page {
+  fill: #ffffff;
+  stroke: rgba(148, 163, 184, 0.44);
+  stroke-width: 2;
+}
+
+.penguin-doc-line {
+  fill: rgba(100, 116, 139, 0.48);
+}
+
+.penguin-core {
+  animation: penguin-idle-waddle 2.25s steps(1, end) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
+}
+
+@keyframes penguin-idle-waddle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-1deg); }
+  50% { transform: translateY(-4px) rotate(0deg); }
+  75% { transform: translateY(-2px) rotate(1deg); }
+}
+
+.penguin-body-dark,
+.penguin-flipper,
+.penguin-walker-body-dark,
+.penguin-walker-flipper {
+  fill: #161925;
+  stroke: #050814;
+  stroke-width: 3;
+}
+
+.penguin-belly,
+.penguin-walker-belly {
+  fill: #f8fbff;
+  stroke: #d8e2ee;
+  stroke-width: 2;
+}
+
+.penguin-foot,
+.penguin-beak-top,
+.penguin-walker-foot,
+.penguin-walker-beak {
+  fill: #f59e0b;
+  stroke: #d97706;
+  stroke-width: 2;
+}
+
+.penguin-beak-smile {
+  fill: none;
+  stroke: #a65f05;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.penguin-eye-white,
+.penguin-walker-eye-white {
+  fill: #ffffff;
+  stroke: #050814;
+  stroke-width: 2;
+}
+
+.penguin-eye-pupil,
+.penguin-walker-eye-pupil {
+  fill: #050814;
+  animation: penguin-eye-look 4.8s steps(1, end) infinite;
+}
+
+@keyframes penguin-eye-look {
+  0%, 58%, 100% { transform: translateX(0); }
+  65%, 76% { transform: translateX(2px); }
+}
+
+.penguin-eye-wink,
+.penguin-walker-eye-wink {
+  fill: none;
+  stroke: #050814;
+  stroke-width: 4;
+  stroke-linecap: round;
+  animation: penguin-wink 5.6s steps(1, end) infinite;
+}
+
+@keyframes penguin-wink {
+  0%, 86%, 100% { opacity: 1; transform: scaleY(1); }
+  89%, 93% { opacity: 0.55; transform: scaleY(0.35); }
+}
+
+.penguin-scarf-wrap,
+.penguin-scarf-tail,
+.penguin-walker-scarf-wrap,
+.penguin-walker-scarf-tail {
+  fill: var(--accent);
+  stroke: #b91c1c;
+  stroke-width: 3;
+}
+
+.penguin-scarf-shadow {
+  fill: none;
+  stroke: #b91c1c;
+  stroke-width: 3;
+  opacity: 0.62;
+}
+
+.penguin-scarf {
+  animation: penguin-scarf-flutter 1.65s steps(1, end) infinite;
+}
+
+@keyframes penguin-scarf-flutter {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.penguin-bubble {
+  opacity: 0;
+}
+
+.penguin-bubble circle {
+  fill: rgba(125, 211, 252, 0.2);
+  stroke: rgba(125, 211, 252, 0.76);
+  stroke-width: 2;
+}
+
+.penguin-bubble text {
+  fill: #8ee6ff;
+  font-size: 11px;
+  font-weight: 820;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.penguin-bubble path {
+  fill: #fb7185;
+  stroke: none;
+}
+
+.penguin-bubble-star path {
+  fill: #facc15;
+}
+
+.figure-persona-penguin.figure-state-idle .penguin-bubble {
+  animation: penguin-bubble-float 3s steps(1, end) infinite;
+}
+
+.figure-persona-penguin.figure-state-idle .penguin-bubble-heart {
+  animation-delay: 0.45s;
+}
+
+.figure-persona-penguin.figure-state-idle .penguin-bubble-star {
+  animation-delay: 0.9s;
+}
+
+@keyframes penguin-bubble-float {
+  0%, 22%, 100% { opacity: 0; transform: translateY(6px) scale(0.82); }
+  35%, 68% { opacity: 0.92; transform: translateY(0) scale(1); }
+}
+
+.figure-persona-penguin.figure-state-working .penguin-core {
+  animation: penguin-working-waddle 0.58s steps(1, end) infinite;
+}
+
+@keyframes penguin-working-waddle {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-5px) rotate(1deg); }
+}
+
+.figure-persona-penguin.figure-state-working .penguin-doc-line {
+  animation: penguin-doc-scan 1.05s steps(1, end) infinite;
+}
+
+.figure-persona-penguin.figure-state-working .penguin-doc-line-2 {
+  animation-delay: 0.22s;
+}
+
+.figure-persona-penguin.figure-state-working .penguin-doc-line-3 {
+  animation-delay: 0.44s;
+}
+
+@keyframes penguin-doc-scan {
+  0%, 100% { opacity: 0.35; transform: translateX(0); }
+  50% { opacity: 0.95; transform: translateX(5px); }
+}
+
+.figure-persona-penguin.figure-state-working .penguin-flipper-left {
+  animation: penguin-flipper-type 0.58s steps(1, end) infinite;
+}
+
+.figure-persona-penguin.figure-state-working .penguin-flipper-right {
+  animation: penguin-flipper-type 0.58s steps(1, end) 0.29s infinite;
+}
+
+@keyframes penguin-flipper-type {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(5px) rotate(5deg); }
+}
+
+.figure-persona-penguin.figure-state-waiting .penguin-flipper-right {
+  animation: penguin-flipper-wave 0.8s steps(1, end) infinite;
+  fill: color-mix(in srgb, #161925 75%, #f59e0b);
+}
+
+@keyframes penguin-flipper-wave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-10deg); }
+}
+
+.figure-persona-penguin.figure-state-failed .penguin-core {
+  animation: penguin-error-shake 0.35s steps(2, end) 3;
+}
+
+.figure-persona-penguin.figure-state-failed .penguin-scarf-wrap,
+.figure-persona-penguin.figure-state-failed .penguin-scarf-tail {
+  fill: #dc2626;
+}
+
+@keyframes penguin-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px) rotate(-2deg); }
+  75% { transform: translateX(4px) rotate(2deg); }
+}
+
+/* —— 桌面 Agent 形象：小度机器人（低分辨率像素版） —— */
+
+.figure-persona-xiaodu .fig-ground {
+  fill: rgba(88, 183, 255, 0.2);
+}
+
+.xiaodu-base-glow,
+.xiaodu-walker-base-glow {
+  fill: rgba(88, 183, 255, 0.28);
+  animation: xiaodu-base-pulse 1.9s steps(1, end) infinite;
+}
+
+@keyframes xiaodu-base-pulse {
+  0%, 100% { opacity: 0.48; transform: scaleX(0.92); }
+  50% { opacity: 0.85; transform: scaleX(1.08); }
+}
+
+.xiaodu-card-shadow {
+  fill: rgba(15, 23, 42, 0.12);
+}
+
+.xiaodu-card-panel {
+  fill: rgba(236, 248, 255, 0.9);
+  stroke: rgba(88, 183, 255, 0.32);
+  stroke-width: 2;
+}
+
+.xiaodu-card-line,
+.xiaodu-card-dot {
+  fill: rgba(30, 58, 138, 0.45);
+}
+
+.xiaodu-core {
+  animation: xiaodu-idle-hover 2.25s steps(1, end) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
+}
+
+@keyframes xiaodu-idle-hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.xiaodu-head-shell,
+.xiaodu-body,
+.xiaodu-arm,
+.xiaodu-foot,
+.xiaodu-walker-head-shell,
+.xiaodu-walker-body,
+.xiaodu-walker-arm,
+.xiaodu-walker-foot {
+  fill: #eef4fb;
+  stroke: #9aa7b8;
+  stroke-width: 3;
+}
+
+.xiaodu-head-neck,
+.xiaodu-walker-neck {
+  fill: #aeb8c7;
+}
+
+.xiaodu-head-screen,
+.xiaodu-chest-screen,
+.xiaodu-walker-head-screen,
+.xiaodu-walker-chest {
+  fill: #111827;
+  stroke: #334155;
+  stroke-width: 2;
+}
+
+.xiaodu-face-bar,
+.xiaodu-chest-dot,
+.xiaodu-walker-face-bar,
+.xiaodu-walker-chest-dot {
+  fill: var(--accent);
+  animation: xiaodu-screen-blink 1.15s steps(1, end) infinite;
+}
+
+.xiaodu-face-chevron,
+.xiaodu-walker-face-chevron {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  animation: xiaodu-face-shift 2.2s steps(1, end) infinite;
+}
+
+.xiaodu-walker-face-chevron {
+  stroke-width: 4;
+}
+
+@keyframes xiaodu-screen-blink {
+  0%, 60%, 100% { opacity: 1; }
+  70%, 86% { opacity: 0.35; }
+}
+
+@keyframes xiaodu-face-shift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-2px); }
+}
+
+.xiaodu-chest-dot-2 {
+  animation-delay: 0.18s;
+}
+
+.xiaodu-chest-dot-3 {
+  animation-delay: 0.36s;
+}
+
+.xiaodu-body-mark {
+  fill: #64748b;
+  font-size: 10px;
+  font-weight: 820;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.xiaodu-signal {
+  fill: var(--accent);
+  opacity: 0;
+}
+
+.figure-persona-xiaodu.figure-state-reserved .xiaodu-signal,
+.figure-persona-xiaodu.figure-state-idle .xiaodu-signal {
+  animation: xiaodu-signal-pop 2.7s steps(1, end) infinite;
+}
+
+.figure-persona-xiaodu.figure-state-reserved .xiaodu-signal-2,
+.figure-persona-xiaodu.figure-state-idle .xiaodu-signal-2 {
+  animation-delay: 0.35s;
+}
+
+.figure-persona-xiaodu.figure-state-reserved .xiaodu-signal-3,
+.figure-persona-xiaodu.figure-state-idle .xiaodu-signal-3 {
+  animation-delay: 0.7s;
+}
+
+@keyframes xiaodu-signal-pop {
+  0%, 24%, 100% { opacity: 0; transform: translateY(5px) scale(0.8); }
+  36%, 66% { opacity: 0.85; transform: translateY(0) scale(1); }
+}
+
+.figure-persona-xiaodu.figure-state-working .xiaodu-core {
+  animation: xiaodu-working-hover 0.62s steps(1, end) infinite;
+}
+
+@keyframes xiaodu-working-hover {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.02); }
+}
+
+.figure-persona-xiaodu.figure-state-working .xiaodu-card-line {
+  animation: xiaodu-card-scan 1.05s steps(1, end) infinite;
+}
+
+.figure-persona-xiaodu.figure-state-working .xiaodu-card-line-2 {
+  animation-delay: 0.28s;
+}
+
+@keyframes xiaodu-card-scan {
+  0%, 100% { opacity: 0.35; transform: translateX(0); }
+  50% { opacity: 0.95; transform: translateX(5px); }
+}
+
+.figure-persona-xiaodu.figure-state-working .xiaodu-arm-left {
+  animation: xiaodu-arm-type 0.58s steps(1, end) infinite;
+}
+
+.figure-persona-xiaodu.figure-state-working .xiaodu-arm-right {
+  animation: xiaodu-arm-type 0.58s steps(1, end) 0.29s infinite;
+}
+
+@keyframes xiaodu-arm-type {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+.figure-persona-xiaodu.figure-state-waiting .xiaodu-arm-right,
+.figure-persona-xiaodu.figure-state-reserved .xiaodu-arm-right {
+  animation: xiaodu-arm-wave 0.85s steps(1, end) infinite;
+}
+
+@keyframes xiaodu-arm-wave {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(-7deg); }
+}
+
+.figure-persona-xiaodu.figure-state-failed .xiaodu-core {
+  animation: xiaodu-error-shake 0.34s steps(2, end) 3;
+}
+
+.figure-persona-xiaodu.figure-state-failed .xiaodu-head-screen,
+.figure-persona-xiaodu.figure-state-failed .xiaodu-chest-screen {
+  fill: #3b1111;
+}
+
+.figure-persona-xiaodu.figure-state-failed .xiaodu-face-bar,
+.figure-persona-xiaodu.figure-state-failed .xiaodu-chest-dot {
+  fill: #f87171;
+}
+
+.figure-persona-xiaodu.figure-state-failed .xiaodu-face-chevron {
+  stroke: #f87171;
+}
+
+@keyframes xiaodu-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* —— 桌面 Agent 形象：红球应用伙伴 —— */
+
+.figure-persona-redorb .fig-ground {
+  fill: rgba(239, 68, 68, 0.18);
+}
+
+.redorb-glow,
+.redorb-walker-glow {
+  fill: rgba(239, 68, 68, 0.2);
+  animation: redorb-glow-pulse 1.8s steps(1, end) infinite;
+}
+
+@keyframes redorb-glow-pulse {
+  0%, 100% { opacity: 0.42; transform: scaleX(0.9); }
+  50% { opacity: 0.75; transform: scaleX(1.08); }
+}
+
+.redorb-panel-shadow {
+  fill: rgba(15, 23, 42, 0.14);
+}
+
+.redorb-panel {
+  fill: rgba(20, 23, 35, 0.86);
+  stroke: rgba(239, 68, 68, 0.38);
+  stroke-width: 2;
+}
+
+.redorb-app-dot {
+  fill: color-mix(in srgb, var(--accent) 68%, #fbbf24);
+  opacity: 0.72;
+}
+
+.redorb-core {
+  animation: redorb-idle-bounce 2s steps(1, end) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
+}
+
+@keyframes redorb-idle-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+
+.redorb-body,
+.redorb-cheek,
+.redorb-foot,
+.redorb-walker-body,
+.redorb-walker-cheek,
+.redorb-walker-foot {
+  fill: var(--accent);
+}
+
+.redorb-body,
+.redorb-walker-body {
+  stroke: var(--accent-dark);
+  stroke-width: 3;
+}
+
+.redorb-cheek,
+.redorb-walker-cheek {
+  fill: color-mix(in srgb, var(--accent) 82%, #fca5a5);
+}
+
+.redorb-foot,
+.redorb-walker-foot {
+  fill: var(--accent-dark);
+}
+
+.redorb-antenna,
+.redorb-walker-antenna {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 75%, #fecaca);
+  stroke-width: 4;
+  stroke-linecap: round;
+  animation: redorb-antenna-sway 2.4s steps(1, end) infinite;
+}
+
+.redorb-antenna-right,
+.redorb-walker-antenna-right {
+  animation-delay: 0.28s;
+}
+
+@keyframes redorb-antenna-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.redorb-eye,
+.redorb-walker-eye {
+  fill: #07151d;
+  stroke: #0f172a;
+  stroke-width: 2;
+  animation: redorb-eye-blink 4.7s steps(1, end) infinite;
+}
+
+.redorb-eye-light,
+.redorb-walker-eye-light {
+  fill: #5eead4;
+}
+
+@keyframes redorb-eye-blink {
+  0%, 90%, 96%, 100% { transform: scaleY(1); }
+  92%, 95% { transform: scaleY(0.2); }
+}
+
+.redorb-spark {
+  fill: #fca5a5;
+  opacity: 0;
+}
+
+.figure-persona-redorb.figure-state-idle .redorb-spark {
+  animation: redorb-spark-pop 2.5s steps(1, end) infinite;
+}
+
+.figure-persona-redorb.figure-state-idle .redorb-spark-2 {
+  animation-delay: 0.32s;
+}
+
+.figure-persona-redorb.figure-state-idle .redorb-spark-3 {
+  animation-delay: 0.64s;
+}
+
+@keyframes redorb-spark-pop {
+  0%, 26%, 100% { opacity: 0; transform: translateY(5px) scale(0.8); }
+  38%, 64% { opacity: 0.9; transform: translateY(0) scale(1); }
+}
+
+.figure-persona-redorb.figure-state-working .redorb-core {
+  animation: redorb-working-pulse 0.58s steps(1, end) infinite;
+}
+
+@keyframes redorb-working-pulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.04); }
+}
+
+.figure-persona-redorb.figure-state-working .redorb-app-dot {
+  animation: redorb-app-launch 1s steps(1, end) infinite;
+}
+
+.figure-persona-redorb.figure-state-working .redorb-app-dot-2 {
+  animation-delay: 0.16s;
+}
+
+.figure-persona-redorb.figure-state-working .redorb-app-dot-3 {
+  animation-delay: 0.32s;
+}
+
+.figure-persona-redorb.figure-state-working .redorb-app-dot-4 {
+  animation-delay: 0.48s;
+}
+
+@keyframes redorb-app-launch {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+}
+
+.figure-persona-redorb.figure-state-waiting .redorb-cheek-right {
+  animation: redorb-hand-wave 0.78s steps(1, end) infinite;
+  fill: #f59e0b;
+}
+
+@keyframes redorb-hand-wave {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-9px) translateX(3px); }
+}
+
+.figure-persona-redorb.figure-state-failed .redorb-core {
+  animation: redorb-error-shake 0.34s steps(2, end) 3;
+}
+
+.figure-persona-redorb.figure-state-failed .redorb-body,
+.figure-persona-redorb.figure-state-failed .redorb-cheek {
+  fill: #b91c1c;
+}
+
+.figure-persona-redorb.figure-state-failed .redorb-eye-light {
+  fill: #fecaca;
+}
+
+@keyframes redorb-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px) scale(0.98); }
+  75% { transform: translateX(4px) scale(1.02); }
 }
 
 /* ============================================================
@@ -1814,6 +2851,62 @@ button {
   .figure-state-waiting .fig-hand-raised,
   .figure-state-waiting .fig-badge-waiting,
   .figure-state-working.figure-supervisor .fig-radar rect,
+  .claude-terminal-cursor,
+  .claude-walker-cursor,
+  .claude-agent-core,
+  .claude-eye,
+  .figure-persona-claude.figure-state-idle .claude-thought,
+  .figure-persona-claude.figure-state-working .claude-terminal-lines rect,
+  .figure-persona-claude.figure-state-working .claude-work-pixel,
+  .figure-persona-claude.figure-state-working .claude-agent-core,
+  .figure-persona-claude.figure-state-waiting .claude-arm-right,
+  .figure-persona-claude.figure-state-failed .claude-agent-core,
+  .codex-terminal-cursor,
+  .codex-face-cursor,
+  .codex-walker-cursor,
+  .codex-pet-core,
+  .figure-persona-codex.figure-state-idle .codex-orbit,
+  .figure-persona-codex.figure-state-working .codex-pet-core,
+  .figure-persona-codex.figure-state-working .codex-terminal-line,
+  .figure-persona-codex.figure-state-working .codex-orbit,
+  .figure-persona-codex.figure-state-waiting .codex-arm-right,
+  .figure-persona-codex.figure-state-failed .codex-pet-core,
+  .penguin-core,
+  .penguin-eye-pupil,
+  .penguin-eye-wink,
+  .penguin-scarf,
+  .figure-persona-penguin.figure-state-idle .penguin-bubble,
+  .figure-persona-penguin.figure-state-working .penguin-core,
+  .figure-persona-penguin.figure-state-working .penguin-doc-line,
+  .figure-persona-penguin.figure-state-working .penguin-flipper-left,
+  .figure-persona-penguin.figure-state-working .penguin-flipper-right,
+  .figure-persona-penguin.figure-state-waiting .penguin-flipper-right,
+  .figure-persona-penguin.figure-state-failed .penguin-core,
+  .xiaodu-base-glow,
+  .xiaodu-walker-base-glow,
+  .xiaodu-core,
+  .xiaodu-face-bar,
+  .xiaodu-chest-dot,
+  .xiaodu-face-chevron,
+  .figure-persona-xiaodu.figure-state-reserved .xiaodu-signal,
+  .figure-persona-xiaodu.figure-state-idle .xiaodu-signal,
+  .figure-persona-xiaodu.figure-state-working .xiaodu-core,
+  .figure-persona-xiaodu.figure-state-working .xiaodu-card-line,
+  .figure-persona-xiaodu.figure-state-working .xiaodu-arm-left,
+  .figure-persona-xiaodu.figure-state-working .xiaodu-arm-right,
+  .figure-persona-xiaodu.figure-state-waiting .xiaodu-arm-right,
+  .figure-persona-xiaodu.figure-state-reserved .xiaodu-arm-right,
+  .figure-persona-xiaodu.figure-state-failed .xiaodu-core,
+  .redorb-glow,
+  .redorb-walker-glow,
+  .redorb-core,
+  .redorb-antenna,
+  .redorb-eye,
+  .figure-persona-redorb.figure-state-idle .redorb-spark,
+  .figure-persona-redorb.figure-state-working .redorb-core,
+  .figure-persona-redorb.figure-state-working .redorb-app-dot,
+  .figure-persona-redorb.figure-state-waiting .redorb-cheek-right,
+  .figure-persona-redorb.figure-state-failed .redorb-core,
   .agent-link-active .agent-link-flow,
   .agent-route-path,
   .board-live-dot,
@@ -1911,6 +3004,41 @@ button {
   will-change: transform;
 }
 
+.walker-persona-claude-desktop {
+  width: 126px;
+  height: 143px;
+  margin-left: -63px;
+  margin-top: -139px;
+}
+
+.walker-persona-codex-pet {
+  width: 118px;
+  height: 134px;
+  margin-left: -59px;
+  margin-top: -130px;
+}
+
+.walker-persona-penguin {
+  width: 118px;
+  height: 134px;
+  margin-left: -59px;
+  margin-top: -130px;
+}
+
+.walker-persona-xiaodu-robot {
+  width: 116px;
+  height: 132px;
+  margin-left: -58px;
+  margin-top: -128px;
+}
+
+.walker-persona-red-orb {
+  width: 116px;
+  height: 132px;
+  margin-left: -58px;
+  margin-top: -128px;
+}
+
 .walker-flip {
   position: absolute;
   inset: 0;
@@ -1936,6 +3064,50 @@ button {
   fill: #232a38;
 }
 
+.walker-persona-claude .claude-walker-cursor {
+  opacity: 0.82;
+}
+
+.walker-persona-claude .claude-walker-cursor-2 {
+  animation-delay: 0.42s;
+}
+
+.walker-persona-codex .codex-walker-core {
+  animation: codex-walker-idle 1.7s steps(1, end) infinite;
+}
+
+.walker-persona-penguin .penguin-walker-core {
+  animation: penguin-walker-idle 1.9s steps(1, end) infinite;
+}
+
+.walker-persona-xiaodu .xiaodu-walker-core {
+  animation: xiaodu-walker-idle 1.85s steps(1, end) infinite;
+}
+
+.walker-persona-redorb .redorb-walker-core {
+  animation: redorb-walker-idle 1.75s steps(1, end) infinite;
+}
+
+@keyframes codex-walker-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes penguin-walker-idle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(1deg); }
+}
+
+@keyframes xiaodu-walker-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes redorb-walker-idle {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.02); }
+}
+
 /* 走路循环：双腿交替踏步 + 手臂摆动 + 整体颠簸，全部 steps 逐帧 */
 .walker-walking .walker-leg-l {
   animation: walker-step 0.36s steps(1, end) infinite;
@@ -1957,9 +3129,179 @@ button {
   animation: walker-bob 0.36s steps(1, end) infinite;
 }
 
+.walker-walking .claude-walker-leg-l {
+  animation: claude-walker-step 0.36s steps(1, end) infinite;
+}
+
+.walker-walking .claude-walker-leg-r {
+  animation: claude-walker-step 0.36s steps(1, end) 0.18s infinite;
+}
+
+.walker-walking .claude-walker-arm-l {
+  animation: claude-walker-swing 0.36s steps(1, end) 0.18s infinite;
+}
+
+.walker-walking .claude-walker-arm-r {
+  animation: claude-walker-swing 0.36s steps(1, end) infinite;
+}
+
+.walker-walking .walker-persona-claude {
+  animation: walker-bob 0.36s steps(1, end) infinite;
+}
+
+.walker-walking .codex-walker-leg-l {
+  animation: codex-walker-step 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .codex-walker-leg-r {
+  animation: codex-walker-step 0.34s steps(1, end) 0.17s infinite;
+}
+
+.walker-walking .codex-walker-arm-l {
+  animation: codex-walker-swing 0.34s steps(1, end) 0.17s infinite;
+}
+
+.walker-walking .codex-walker-arm-r {
+  animation: codex-walker-swing 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .walker-persona-codex {
+  animation: codex-walker-bob 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .penguin-walker-foot-left {
+  animation: penguin-walker-step 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .penguin-walker-foot-right {
+  animation: penguin-walker-step 0.34s steps(1, end) 0.17s infinite;
+}
+
+.walker-walking .penguin-walker-flipper-left {
+  animation: penguin-walker-swing 0.34s steps(1, end) 0.17s infinite;
+}
+
+.walker-walking .penguin-walker-flipper-right {
+  animation: penguin-walker-swing 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .walker-persona-penguin {
+  animation: penguin-walker-bob 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .xiaodu-walker-foot-l {
+  animation: xiaodu-walker-step 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .xiaodu-walker-foot-r {
+  animation: xiaodu-walker-step 0.34s steps(1, end) 0.17s infinite;
+}
+
+.walker-walking .xiaodu-walker-arm-l {
+  animation: xiaodu-walker-swing 0.34s steps(1, end) 0.17s infinite;
+}
+
+.walker-walking .xiaodu-walker-arm-r {
+  animation: xiaodu-walker-swing 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .walker-persona-xiaodu {
+  animation: xiaodu-walker-bob 0.34s steps(1, end) infinite;
+}
+
+.walker-walking .redorb-walker-foot-l {
+  animation: redorb-walker-step 0.32s steps(1, end) infinite;
+}
+
+.walker-walking .redorb-walker-foot-r {
+  animation: redorb-walker-step 0.32s steps(1, end) 0.16s infinite;
+}
+
+.walker-walking .redorb-walker-cheek-left {
+  animation: redorb-walker-hand 0.32s steps(1, end) 0.16s infinite;
+}
+
+.walker-walking .redorb-walker-cheek-right {
+  animation: redorb-walker-hand 0.32s steps(1, end) infinite;
+}
+
+.walker-walking .walker-persona-redorb {
+  animation: redorb-walker-bob 0.32s steps(1, end) infinite;
+}
+
 @keyframes walker-step {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-3px); }
+}
+
+@keyframes claude-walker-step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes claude-walker-swing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+@keyframes codex-walker-step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes codex-walker-swing {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(5px) rotate(8deg); }
+}
+
+@keyframes codex-walker-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes penguin-walker-step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes penguin-walker-swing {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(5px) rotate(8deg); }
+}
+
+@keyframes penguin-walker-bob {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+
+@keyframes xiaodu-walker-step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes xiaodu-walker-swing {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(5px) rotate(6deg); }
+}
+
+@keyframes xiaodu-walker-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes redorb-walker-step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes redorb-walker-hand {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+@keyframes redorb-walker-bob {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.03); }
 }
 
 @keyframes walker-bob {
@@ -2028,6 +3370,37 @@ button {
   transition: opacity 180ms ease;
 }
 
+.agent-station-away .figure-persona-claude .claude-agent-core,
+.agent-station-away .figure-persona-claude .claude-thought-pixels,
+.agent-station-away .figure-persona-claude .claude-work-pixels {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.agent-station-away .figure-persona-codex .codex-pet-core,
+.agent-station-away .figure-persona-codex .codex-orbit-pixels {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.agent-station-away .figure-persona-penguin .penguin-core,
+.agent-station-away .figure-persona-penguin .penguin-bubbles {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.agent-station-away .figure-persona-xiaodu .xiaodu-core,
+.agent-station-away .figure-persona-xiaodu .xiaodu-signal-pixels {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.agent-station-away .figure-persona-redorb .redorb-core,
+.agent-station-away .figure-persona-redorb .redorb-sparks {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
 .fig-person {
   transition: opacity 220ms ease;
 }
@@ -2049,6 +3422,35 @@ button {
   .walker-walking .walker-arm-l,
   .walker-walking .walker-arm-r,
   .walker-walking .walker-svg,
+  .walker-walking .claude-walker-leg-l,
+  .walker-walking .claude-walker-leg-r,
+  .walker-walking .claude-walker-arm-l,
+  .walker-walking .claude-walker-arm-r,
+  .walker-walking .walker-persona-claude,
+  .walker-persona-codex .codex-walker-core,
+  .walker-walking .codex-walker-leg-l,
+  .walker-walking .codex-walker-leg-r,
+  .walker-walking .codex-walker-arm-l,
+  .walker-walking .codex-walker-arm-r,
+  .walker-walking .walker-persona-codex,
+  .walker-persona-penguin .penguin-walker-core,
+  .walker-walking .penguin-walker-foot-left,
+  .walker-walking .penguin-walker-foot-right,
+  .walker-walking .penguin-walker-flipper-left,
+  .walker-walking .penguin-walker-flipper-right,
+  .walker-walking .walker-persona-penguin,
+  .walker-persona-xiaodu .xiaodu-walker-core,
+  .walker-walking .xiaodu-walker-foot-l,
+  .walker-walking .xiaodu-walker-foot-r,
+  .walker-walking .xiaodu-walker-arm-l,
+  .walker-walking .xiaodu-walker-arm-r,
+  .walker-walking .walker-persona-xiaodu,
+  .walker-persona-redorb .redorb-walker-core,
+  .walker-walking .redorb-walker-foot-l,
+  .walker-walking .redorb-walker-foot-r,
+  .walker-walking .redorb-walker-cheek-left,
+  .walker-walking .redorb-walker-cheek-right,
+  .walker-walking .walker-persona-redorb,
   .pixel-bubble i,
   .agent-station-stretch .fig-arm-left,
   .agent-station-stretch .fig-arm-right {
