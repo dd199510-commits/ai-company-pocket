@@ -28,6 +28,7 @@ function personAnchor(agent) {
 
 const WALK_SPEED = 72 // px/s，正常步行
 const RECALL_SPEED_MULTIPLIER = 2.8 // 被派活时快步赶回
+const VISIT_FRONT_OFFSET_Y = 46 // 拜访同事时站在工位前方，避免盖住对方角色。
 
 const PX = 6
 const DESKTOP_AGENT_PERSONAS = {
@@ -236,36 +237,39 @@ function PenguinCharacter({ agent }) {
       role="img"
       aria-label={`${agent.name} · ${agentStatusText(agent)}`}
     >
-      <rect className="fig-ground" x="25" y="113" width="100" height="7" />
+      <rect className="fig-ground" x="48" y="118" width="54" height="5" />
 
-      <g className="penguin-doc-card" aria-hidden="true">
-        <rect className="penguin-doc-shadow" x="83" y="45" width="35" height="48" />
-        <rect className="penguin-doc-page" x="80" y="42" width="35" height="48" />
-        <rect className="penguin-doc-line penguin-doc-line-1" x="87" y="53" width="18" height="4" />
-        <rect className="penguin-doc-line penguin-doc-line-2" x="87" y="63" width="22" height="4" />
-        <rect className="penguin-doc-line penguin-doc-line-3" x="87" y="73" width="14" height="4" />
-      </g>
-
-      <g className="penguin-core">
-        <ellipse className="penguin-foot penguin-foot-left" cx="51" cy="110" rx="21" ry="8" />
-        <ellipse className="penguin-foot penguin-foot-right" cx="97" cy="110" rx="21" ry="8" />
-        <ellipse className="penguin-body-dark" cx="75" cy="65" rx="45" ry="52" />
-        <ellipse className="penguin-belly" cx="77" cy="82" rx="31" ry="30" />
-        <path className="penguin-flipper penguin-flipper-left" d="M 33 69 L 14 85 L 22 107 L 43 92 Z" />
-        <path className="penguin-flipper penguin-flipper-right" d="M 116 69 L 136 86 L 127 107 L 106 92 Z" />
-        <g className="penguin-face">
-          <ellipse className="penguin-eye-white" cx="62" cy="42" rx="13" ry="17" />
-          <ellipse className="penguin-eye-white" cx="88" cy="42" rx="13" ry="17" />
-          <rect className="penguin-eye-pupil" x="65" y="39" width="7" height="9" rx="2" />
-          <path className="penguin-eye-wink" d="M 83 42 Q 88 36 94 42" />
-          <path className="penguin-beak-top" d="M 43 62 L 105 61 L 116 69 L 104 76 L 45 76 L 34 69 Z" />
-          <path className="penguin-beak-smile" d="M 51 69 Q 75 77 101 69" />
+      {/* 像素企鹅（站立版）：方块网格，脚落在最底部 */}
+      <g className="pg-core">
+        {/* 头 黑 */}
+        {px(9, 2, 7, 1, 'pg-blk')}
+        {px(8, 3, 9, 1, 'pg-blk')}
+        {px(7, 4, 11, 1, 'pg-blk')}
+        {px(7, 5, 2, 4, 'pg-blk')}
+        {px(16, 5, 2, 4, 'pg-blk')}
+        {px(9, 5, 7, 4, 'pg-wht')}
+        {px(7, 9, 11, 1, 'pg-blk')}
+        {/* 眼 */}
+        <g className="pg-eyes">
+          {px(10, 6, 1, 2, 'pg-eye')}
+          {px(14, 6, 1, 2, 'pg-eye')}
         </g>
-        <g className="penguin-scarf">
-          <path className="penguin-scarf-wrap" d="M 28 63 C 48 78 103 79 124 63 L 120 82 C 95 96 54 95 31 81 Z" />
-          <path className="penguin-scarf-tail" d="M 50 78 L 70 82 L 63 116 L 43 111 Z" />
-          <path className="penguin-scarf-shadow" d="M 39 77 C 57 87 95 88 112 77" />
-        </g>
+        {/* 喙 橙 */}
+        {px(11, 7, 3, 2, 'pg-org')}
+        {/* 身体 黑 + 肚 白 */}
+        {px(6, 10, 13, 7, 'pg-blk')}
+        {px(7, 17, 11, 1, 'pg-blk')}
+        {px(9, 11, 7, 6, 'pg-wht')}
+        {/* 鳍 黑 */}
+        <g className="pg-flipper pg-flipper-l">{px(5, 11, 1, 4, 'pg-blk')}</g>
+        <g className="pg-flipper pg-flipper-r">{px(19, 11, 1, 4, 'pg-blk')}</g>
+        {/* 围巾 红 + 飘带 */}
+        {px(7, 9, 11, 1, 'pg-scarf')}
+        {px(6, 10, 13, 1, 'pg-scarf')}
+        {px(7, 11, 2, 5, 'pg-scarf')}
+        {/* 脚 橙 */}
+        <g className="pg-foot pg-foot-l">{px(8, 18, 3, 2, 'pg-org')}</g>
+        <g className="pg-foot pg-foot-r">{px(14, 18, 3, 2, 'pg-org')}</g>
       </g>
 
       <g className="penguin-bubbles" aria-hidden="true">
@@ -580,22 +584,36 @@ function CodexWalkerSprite() {
 function PenguinWalkerSprite() {
   return (
     <svg className="walker-svg walker-persona-penguin" viewBox="0 0 90 102" aria-hidden="true">
-      <g className="penguin-walker-core">
-        <ellipse className="penguin-walker-foot penguin-walker-foot-left" cx="32" cy="88" rx="13" ry="5" />
-        <ellipse className="penguin-walker-foot penguin-walker-foot-right" cx="58" cy="88" rx="13" ry="5" />
-        <ellipse className="penguin-walker-body-dark" cx="45" cy="47" rx="28" ry="35" />
-        <ellipse className="penguin-walker-belly" cx="46" cy="61" rx="19" ry="19" />
-        <path className="penguin-walker-flipper penguin-walker-flipper-left" d="M 20 50 L 9 61 L 14 77 L 26 67 Z" />
-        <path className="penguin-walker-flipper penguin-walker-flipper-right" d="M 70 50 L 81 61 L 76 77 L 64 67 Z" />
-        <ellipse className="penguin-walker-eye-white" cx="37" cy="31" rx="8" ry="10" />
-        <ellipse className="penguin-walker-eye-white" cx="53" cy="31" rx="8" ry="10" />
-        <rect className="penguin-walker-eye-pupil" x="39" y="30" width="4" height="5" rx="1" />
-        <path className="penguin-walker-eye-wink" d="M 50 31 Q 53 27 57 31" />
-        <path className="penguin-walker-beak" d="M 27 43 L 62 42 L 69 47 L 62 52 L 28 52 L 21 47 Z" />
-        <g className="penguin-walker-scarf">
-          <path className="penguin-walker-scarf-wrap" d="M 18 44 C 31 54 59 55 72 44 L 69 56 C 54 65 36 65 21 56 Z" />
-          <path className="penguin-walker-scarf-tail" d="M 32 55 L 44 58 L 39 82 L 27 78 Z" />
+      {/* 像素企鹅（走动版）：脚画在 viewBox 最底部，天然贴地不悬空 */}
+      <g className="pg-walk-core">
+        {/* 头 黑 + 脸 白 */}
+        {px(5, 1, 5, 1, 'pg-blk')}
+        {px(4, 2, 7, 1, 'pg-blk')}
+        {px(4, 3, 7, 1, 'pg-blk')}
+        {px(4, 4, 1, 3, 'pg-blk')}
+        {px(10, 4, 1, 3, 'pg-blk')}
+        {px(5, 4, 5, 3, 'pg-wht')}
+        {px(4, 7, 7, 1, 'pg-blk')}
+        {/* 眼 */}
+        <g className="pg-eyes">
+          {px(6, 5, 1, 1, 'pg-eye')}
+          {px(8, 5, 1, 1, 'pg-eye')}
         </g>
+        {/* 喙 橙 */}
+        {px(6, 6, 3, 1, 'pg-org')}
+        {/* 身体 黑 + 肚 白 */}
+        {px(3, 9, 9, 6, 'pg-blk')}
+        {px(4, 15, 7, 1, 'pg-blk')}
+        {px(5, 10, 5, 5, 'pg-wht')}
+        {/* 鳍 黑 */}
+        <g className="pg-flipper pg-flipper-l">{px(2, 10, 1, 3, 'pg-blk')}</g>
+        <g className="pg-flipper pg-flipper-r">{px(12, 10, 1, 3, 'pg-blk')}</g>
+        {/* 围巾 红 + 飘带 */}
+        {px(4, 7, 7, 2, 'pg-scarf')}
+        {px(5, 9, 2, 2, 'pg-scarf')}
+        {/* 脚 橙（底部） */}
+        <g className="pg-foot pg-foot-l">{px(4, 16, 3, 1, 'pg-org')}</g>
+        <g className="pg-foot pg-foot-r">{px(8, 16, 3, 1, 'pg-org')}</g>
       </g>
     </svg>
   )
@@ -1062,7 +1080,10 @@ function useAmbientLife(agents) {
       const partner = candidates[Math.floor(Math.random() * candidates.length)]
       const partnerHome = personAnchor(partner)
       const side = home.x <= partnerHome.x ? -1 : 1
-      const dest = { x: partnerHome.x + side * 80, y: partnerHome.y + 4 }
+      const dest = {
+        x: partnerHome.x + side * 80,
+        y: Math.min(partnerHome.y + VISIT_FRONT_OFFSET_Y, OFFICE_STAGE_HEIGHT - 56),
+      }
       setWalkers((current) => ({ ...current, [id]: spawn }))
       addTimer(id, () => {
         walkTo(id, home, dest, 1, () => {

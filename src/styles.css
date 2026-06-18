@@ -3532,7 +3532,144 @@ button {
   50% { transform: rotate(6deg); }
 }
 
-/* 5) 让企鹅落到地面：下移 8px 使脚椭圆贴住地面锚点与投影 */
+/* 5) 移动企鹅使用更小的落地尺寸：脚底贴 walker 锚点，避免压到同事头顶。
+   精灵 viewBox 底部留白约 10%（脚画在 y93/102），故把 margin-top 下移到
+   -100px，让脚椭圆正好压在地面锚点上；影子随之挪到脚下。 */
 .walker-persona-penguin {
-  margin-top: -122px;
+  width: 98px;
+  height: 111px;
+  margin-left: -49px;
+  margin-top: -100px;
+}
+
+.walker-persona-penguin .walker-shadow-strip {
+  bottom: 11px;
+  width: 50px;
+  height: 6px;
+  margin-left: -25px;
+  background: rgba(71, 85, 105, 0.3);
+}
+
+/* 6) 停下来的企鹅也不做上下漂浮，只保留贴地左右摇 */
+.walker-persona-penguin .penguin-walker-core {
+  animation: penguin-grounded-idle 1.35s steps(2, end) infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 92%;
+}
+
+@keyframes penguin-grounded-idle {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+/* ============================================================
+   像素企鹅 v2（整体重画）：方块网格，脚贴 viewBox 底部，
+   不再依赖 margin 微调；干净的待机呼吸 + 企鹅式踱步。
+   ============================================================ */
+
+.pg-blk { fill: #1b2130; }
+.pg-wht { fill: #ffffff; }
+.pg-org { fill: #f4a52a; }
+.pg-scarf { fill: #e23b3b; }
+.pg-eye { fill: #1b2130; }
+
+/* —— 站立版：随办公室同节奏轻呼吸 + 偶尔眨眼 —— */
+.figure-persona-penguin .pg-core {
+  transform-box: fill-box;
+  animation: mascot-idle-bob 2.4s steps(1, end) infinite;
+  animation-delay: var(--agent-stagger, 0s);
+  will-change: transform;
+}
+
+.figure-persona-penguin .pg-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fig-blink 4.8s steps(1, end) infinite;
+}
+
+/* —— 走动版：复位为基础 walker 尺寸（脚已在底部，天然贴地） —— */
+.walker-persona-penguin {
+  width: 90px;
+  height: 102px;
+  margin-left: -45px;
+  margin-top: -98px;
+}
+
+.walker-persona-penguin .walker-shadow-strip {
+  bottom: 2px;
+  width: 46px;
+  height: 6px;
+  margin-left: -23px;
+  background: rgba(71, 85, 105, 0.3);
+}
+
+/* 站定（串门/等待）：贴地小幅左右摇，不上下浮 */
+.walker-persona-penguin .pg-walk-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pg-idle-rock 1.7s steps(2, end) infinite;
+}
+
+@keyframes pg-idle-rock {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+
+/* 走动：取消整张 svg 的上下颠簸，改企鹅左右摇摆踱步 */
+.walker-walking .walker-persona-penguin {
+  animation: none;
+}
+
+.walker-walking .pg-walk-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pg-waddle 0.44s steps(2, end) infinite;
+}
+
+@keyframes pg-waddle {
+  0% { transform: rotate(-3.5deg); }
+  50% { transform: rotate(3.5deg); }
+  100% { transform: rotate(-3.5deg); }
+}
+
+/* 脚交替小抬，踏步感（脚在底部，小抬即踏步） */
+.walker-walking .pg-foot-l,
+.walker-walking .pg-foot-r {
+  transform-box: fill-box;
+  animation: pg-step 0.44s steps(2, end) infinite;
+}
+
+.walker-walking .pg-foot-r { animation-delay: 0.22s; }
+
+@keyframes pg-step {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* 鳍随摆动小幅摆臂 */
+.walker-walking .pg-flipper-l,
+.walker-walking .pg-flipper-r {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: pg-flap 0.44s steps(2, end) infinite;
+}
+
+.walker-walking .pg-flipper-r { animation-delay: 0.22s; }
+
+@keyframes pg-flap {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure-persona-penguin .pg-core,
+  .figure-persona-penguin .pg-eyes,
+  .walker-persona-penguin .pg-walk-core,
+  .walker-walking .pg-walk-core,
+  .walker-walking .pg-foot-l,
+  .walker-walking .pg-foot-r,
+  .walker-walking .pg-flipper-l,
+  .walker-walking .pg-flipper-r {
+    animation: none;
+  }
 }
