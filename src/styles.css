@@ -3478,3 +3478,61 @@ button {
   height: 14px;
   shape-rendering: crispEdges;
 }
+
+/* ============================================================
+   修复「企鹅移动像飘在空中」
+   原因：走动时 penguin-walker-idle(常驻上下浮) + penguin-walker-bob(再上下浮)
+   叠加，且脚椭圆被上抬脱离身体。改为左右摇摆的企鹅踱步，脚贴地。
+   ============================================================ */
+
+/* 1) 走动时取消整张 svg 的上下颠簸（保留水平位移由 JS 控制） */
+.walker-walking .walker-persona-penguin {
+  animation: none;
+}
+
+/* 2) 走动时核心改为左右摇摆（绕脚底旋转），覆盖常驻 idle 浮动 */
+.walker-walking .penguin-walker-core {
+  animation: penguin-waddle 0.46s steps(2, end) infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 92%;
+}
+
+@keyframes penguin-waddle {
+  0% { transform: rotate(-3.5deg); }
+  50% { transform: rotate(3.5deg); }
+  100% { transform: rotate(-3.5deg); }
+}
+
+/* 3) 脚不再向上抬，改为随摇摆轻微左右挪动（贴地小碎步） */
+.walker-walking .penguin-walker-foot-left {
+  animation: penguin-foot-shuffle 0.46s steps(2, end) infinite;
+}
+
+.walker-walking .penguin-walker-foot-right {
+  animation: penguin-foot-shuffle 0.46s steps(2, end) 0.23s infinite;
+}
+
+@keyframes penguin-foot-shuffle {
+  0%, 100% { transform: translateX(-1px); }
+  50% { transform: translateX(1px); }
+}
+
+/* 4) 鳍随摆动小幅摆臂，不再大幅下沉 */
+.walker-walking .penguin-walker-flipper-left,
+.walker-walking .penguin-walker-flipper-right {
+  animation: penguin-flipper-swing 0.46s steps(2, end) infinite;
+}
+
+.walker-walking .penguin-walker-flipper-right {
+  animation-delay: 0.23s;
+}
+
+@keyframes penguin-flipper-swing {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+
+/* 5) 让企鹅落到地面：下移 8px 使脚椭圆贴住地面锚点与投影 */
+.walker-persona-penguin {
+  margin-top: -122px;
+}
