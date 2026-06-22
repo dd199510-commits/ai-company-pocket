@@ -9,6 +9,122 @@ const VIEWED_TASKS_BASELINE_KEY = 'pocket-viewed-task-ids-tool-session-v2'
 const DETAIL_SECTION_SEPARATOR = '\u001d'
 const SESSION_MESSAGE_SEPARATOR = '\u001e'
 
+function isGithubPagesDemoHost() {
+  return window.location.hostname.endsWith('github.io') && window.location.pathname.includes('/ai-company-pocket')
+}
+
+function createDemoPocketStatus() {
+  const now = new Date()
+  const inFiveHours = new Date(now.getTime() + 2.5 * 60 * 60 * 1000)
+  const nextWeek = new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000)
+  const reset5h = inFiveHours.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  const resetWeek = nextWeek.toLocaleString('zh-CN', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+  return {
+    refreshedAt: now.toISOString(),
+    readiness: {
+      readyCount: 3,
+      total: 3,
+      headline: 'GitHub Pages demo；本机运行时会读取真实 Codex / Claude / OpenClaw 状态。',
+    },
+    assets: { recentCount: 140 },
+    tools: [
+      {
+        id: 'codex',
+        name: 'Codex',
+        shortName: 'CDX',
+        status: 'online',
+        detail: '21 个进程在线',
+        station: { x: 116, y: 260 },
+        usage: {
+          percent: 59,
+          value: '5h 59% / 7d 84%',
+          display: {
+            type: 'codex',
+            mode: 'remaining',
+            rows: [
+              { label: '5H', value: '59%', percent: 59, reset: reset5h },
+              { label: '7D', value: '84%', percent: 84, reset: resetWeek },
+            ],
+          },
+        },
+      },
+      {
+        id: 'claude-code',
+        name: 'Claude Code',
+        shortName: 'CLAUDE',
+        status: 'idle',
+        detail: '桌面会话待命',
+        station: { x: 280, y: 260 },
+        usage: {
+          percent: 98,
+          value: '5h 98% / 7d 95%',
+          display: {
+            type: 'claude',
+            mode: 'remaining',
+            rows: [
+              { label: '5H', value: '98%', percent: 98, reset: reset5h },
+              { label: '7D', value: '95%', percent: 95, reset: resetWeek },
+            ],
+          },
+        },
+      },
+      {
+        id: 'openclaw',
+        name: 'OpenClaw',
+        shortName: 'CLAW',
+        status: 'online',
+        detail: '周 token 消耗 23.2M',
+        station: { x: 456, y: 260 },
+        usage: {
+          percent: 72,
+          value: '23.2M',
+          display: {
+            type: 'openclaw',
+            mode: 'tokens',
+            rows: [
+              { label: '7D TOK', value: '23.2M', percent: 72, reset: 'LOGS' },
+            ],
+          },
+        },
+      },
+    ],
+    tasks: {
+      active: [],
+      pending: [],
+      history: [
+        {
+          taskId: 'demo-codex-thread',
+          agentId: 'codex',
+          status: 'done',
+          title: '同步真实会话方案',
+          message: '让 pocket 显示桌面端 Codex 当前会话',
+          summary: '已完成 bridge 路由与桌面刷新方案；公开 Pages 使用 demo 数据展示界面形态。',
+          startedAt: new Date(now.getTime() - 58 * 60 * 1000).toISOString(),
+          finishedAt: new Date(now.getTime() - 52 * 60 * 1000).toISOString(),
+          workspaceLabel: 'ai-company-pocket',
+          workspaceRoot: '/Users/ddss/Documents/多agent协作项目（数字员工）',
+          toolSource: 'demo',
+          toolSessionId: 'demo-codex',
+          canReply: false,
+          replyBlockedReason: '公开 Pages 是静态 demo，不能直接写回本机真实工具。',
+          artifacts: ['Pocket GitHub Pages demo fallback'],
+          conversation: [
+            { role: 'user', text: '把公开页面显示成 pocket 墨水屏界面。', at: new Date(now.getTime() - 58 * 60 * 1000).toISOString() },
+            { role: 'assistant', text: '已将 Pages 根路径切到 pocket UI，并在 bridge 不可用时展示完整 demo 状态。', at: new Date(now.getTime() - 52 * 60 * 1000).toISOString() },
+          ],
+        },
+      ],
+      recentCommands: [],
+    },
+  }
+}
+
 function statusLabel(status) {
   if (status === 'online') return 'ON'
   if (status === 'limited') return 'LIM'
@@ -796,6 +912,11 @@ export function PocketApp() {
       setStatus(payload)
       setError('')
     } catch (nextError) {
+      if (isGithubPagesDemoHost()) {
+        setStatus(createDemoPocketStatus())
+        setError('')
+        return
+      }
       setError(nextError.message)
     }
   }, [])
