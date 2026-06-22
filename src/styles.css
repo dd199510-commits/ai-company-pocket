@@ -3719,7 +3719,7 @@ button {
 }
 
 .pocket-usage-strip {
-  height: 74px;
+  height: 82px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
@@ -3730,8 +3730,8 @@ button {
 .pocket-usage-tile {
   min-width: 0;
   display: grid;
-  grid-template-rows: 15px minmax(0, 1fr);
-  gap: 4px;
+  grid-template-rows: 14px minmax(0, 1fr);
+  gap: 3px;
   align-content: start;
   padding: 2px 7px 5px;
   border-left: 2px solid rgba(24, 25, 20, 0.62);
@@ -3739,7 +3739,7 @@ button {
 }
 
 .pocket-usage-tile strong {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   line-height: 1;
   overflow: hidden;
@@ -3749,20 +3749,25 @@ button {
 
 .pocket-usage-rows {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
 }
 
 .pocket-usage-row {
   min-width: 0;
   display: grid;
-  grid-template-columns: 30px minmax(48px, 1fr) 32px;
-  gap: 4px;
+  grid-template-columns: 30px minmax(48px, 1fr) 33px;
+  grid-template-areas:
+    "label bar value"
+    ". reset reset";
+  column-gap: 4px;
+  row-gap: 2px;
   align-items: center;
 }
 
 .pocket-usage-row span,
-.pocket-usage-row em {
+.pocket-usage-row em,
+.pocket-usage-row small {
   overflow: hidden;
   font-size: 10px;
   font-style: normal;
@@ -3772,9 +3777,14 @@ button {
   white-space: nowrap;
 }
 
+.pocket-usage-row span {
+  grid-area: label;
+}
+
 .pocket-usage-row i {
+  grid-area: bar;
   display: block;
-  height: 12px;
+  height: 10px;
   border: 2px solid #181914;
   background:
     repeating-linear-gradient(90deg, rgba(24, 25, 20, 0.1) 0 2px, transparent 2px 7px);
@@ -3788,6 +3798,14 @@ button {
 }
 
 .pocket-usage-row em {
+  grid-area: value;
+  text-align: right;
+}
+
+.pocket-usage-row small {
+  grid-area: reset;
+  font-size: 8px;
+  opacity: 0.86;
   text-align: right;
 }
 
@@ -3846,6 +3864,12 @@ button {
   background: #eef0de;
   font-size: 14px;
   font-weight: 900;
+}
+
+.pocket-main-screen-unread {
+  background:
+    repeating-linear-gradient(90deg, rgba(24, 25, 20, 0.12) 0 4px, transparent 4px 9px),
+    #eef0de;
 }
 
 .pocket-main-screen i {
@@ -3924,6 +3948,36 @@ button {
   margin: 0 auto;
   display: grid;
   place-items: end center;
+}
+
+.pocket-agent-notice {
+  position: absolute;
+  right: -16px;
+  top: 3px;
+  min-width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #181914;
+  background: #eef0de;
+  color: #181914;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 3px 3px 0 rgba(24, 25, 20, 0.22);
+}
+
+.pocket-agent-notice-permit {
+  border-style: dashed;
+}
+
+.pocket-agent-notice-unread {
+  background: #181914;
+  color: #eef0de;
+}
+
+.pocket-agent-notice-running {
+  animation: pocket-notice-jump 0.72s steps(2, end) infinite;
 }
 
 /* —— 墨水屏灰阶像素精灵 —— */
@@ -4159,6 +4213,267 @@ button {
   right: 54px;
 }
 
+.pocket-menu-panel {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  z-index: 2;
+  width: min(660px, calc(100% - 28px));
+  height: 232px;
+  padding: 10px;
+  border: 3px solid #181914;
+  background: #eef0de;
+  box-shadow: 6px 6px 0 rgba(24, 25, 20, 0.22);
+  transform: translateX(-50%);
+}
+
+.pocket-menu-head {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 3px solid #181914;
+  font-weight: 900;
+}
+
+.pocket-menu-head strong,
+.pocket-menu-head span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-menu-head strong {
+  font-size: 18px;
+}
+
+.pocket-menu-head span {
+  font-size: 12px;
+}
+
+.pocket-menu-list {
+  display: grid;
+  gap: 7px;
+  max-height: 177px;
+  overflow-y: auto;
+  padding-top: 9px;
+  padding-right: 6px;
+  scrollbar-color: #181914 transparent;
+  scrollbar-width: thin;
+}
+
+.pocket-menu-list::-webkit-scrollbar,
+.pocket-menu-detail-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pocket-menu-list::-webkit-scrollbar-thumb,
+.pocket-menu-detail-body::-webkit-scrollbar-thumb {
+  background: #181914;
+}
+
+.pocket-menu-row {
+  height: 42px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 172px;
+  gap: 10px;
+  align-items: center;
+  border: 2px solid #181914;
+  background: #d7d8c8;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.pocket-menu-row i {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border-right: 2px solid #181914;
+  background: #181914;
+  color: #eef0de;
+  font-style: normal;
+}
+
+.pocket-menu-row strong,
+.pocket-menu-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-menu-row span {
+  padding-right: 8px;
+  text-align: right;
+}
+
+.pocket-menu-row-selected {
+  outline: 4px solid #181914;
+  outline-offset: 2px;
+  background: #f3f4e8;
+}
+
+.pocket-menu-row-more {
+  background:
+    repeating-linear-gradient(90deg, rgba(24, 25, 20, 0.14) 0 4px, transparent 4px 9px),
+    #d7d8c8;
+}
+
+.pocket-menu-row-real {
+  border-style: dashed;
+}
+
+.pocket-menu-row-unread {
+  background: #eef0de;
+}
+
+.pocket-menu-row-unread i {
+  background: #181914;
+  color: #eef0de;
+}
+
+.pocket-menu-row-wait {
+  background: #f0f0de;
+}
+
+.pocket-menu-row-err {
+  background:
+    repeating-linear-gradient(135deg, rgba(24, 25, 20, 0.18) 0 3px, transparent 3px 9px),
+    #d7d8c8;
+}
+
+.pocket-menu-empty {
+  height: 148px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed #181914;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.pocket-menu-detail-panel {
+  height: 232px;
+}
+
+.pocket-menu-detail-body {
+  height: 148px;
+  margin: 8px 0 6px;
+  overflow: auto;
+  padding-right: 6px;
+  scrollbar-color: #181914 transparent;
+  scrollbar-width: thin;
+}
+
+.pocket-detail-section {
+  margin-bottom: 6px;
+  border: 2px solid #181914;
+  background: #f3f4e8;
+}
+
+.pocket-detail-section h3 {
+  margin: 0;
+  padding: 2px 7px;
+  border-bottom: 2px solid #181914;
+  background: #d7d8c8;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.pocket-detail-section > p {
+  margin: 0;
+  padding: 5px 7px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.32;
+  white-space: pre-wrap;
+}
+
+.pocket-detail-section-session {
+  border: 0;
+  background: transparent;
+}
+
+.pocket-detail-section-session h3 {
+  border: 2px solid #181914;
+  background: #181914;
+  color: #eef0de;
+}
+
+.pocket-session-thread {
+  display: grid;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.pocket-session-message {
+  border: 2px solid #181914;
+  background: #f3f4e8;
+}
+
+.pocket-session-message header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 19px;
+  padding: 1px 7px;
+  border-bottom: 2px solid #181914;
+  background: #d7d8c8;
+}
+
+.pocket-session-message header strong {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.pocket-session-message header span {
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-session-message p {
+  margin: 0;
+  padding: 5px 7px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.34;
+  white-space: pre-wrap;
+}
+
+.pocket-session-message-user {
+  background: #eef0de;
+}
+
+.pocket-session-message-user header {
+  background: #d7d8c8;
+}
+
+.pocket-session-message-ai {
+  background: #ffffff;
+  box-shadow: inset 5px 0 0 #181914;
+}
+
+.pocket-session-message-ai header {
+  background: #181914;
+  color: #eef0de;
+}
+
+.pocket-menu-detail-panel em {
+  display: block;
+  overflow: hidden;
+  border-top: 2px solid #181914;
+  padding-top: 7px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .pocket-detail {
   height: 70px;
   margin: 0 18px;
@@ -4289,6 +4604,11 @@ button {
   50% { transform: translateX(4px); }
 }
 
+@keyframes pocket-notice-jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 @keyframes pocket-pixel-blink {
   0%, 54% { opacity: 1; }
   55%, 100% { opacity: 0; }
@@ -4339,7 +4659,8 @@ button {
   .pocket-sprite-openclaw .pk-openclaw-ant-l,
   .pocket-sprite-openclaw .pk-openclaw-ant-r,
   .pocket-sprite-openclaw .pk-openclaw-hand-l,
-  .pocket-sprite-openclaw .pk-openclaw-hand-r {
+  .pocket-sprite-openclaw .pk-openclaw-hand-r,
+  .pocket-agent-notice-running {
     animation: none;
   }
 }

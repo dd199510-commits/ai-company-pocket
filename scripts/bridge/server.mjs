@@ -193,6 +193,9 @@ const server = createServer(async (request, response) => {
       sendJson(response, 202, await startPocketCommand({
         target,
         message: body.message,
+        toolSessionId: body.toolSessionId,
+        toolSessionCwd: body.toolSessionCwd,
+        toolSessionSource: body.toolSessionSource,
       }))
       return
     }

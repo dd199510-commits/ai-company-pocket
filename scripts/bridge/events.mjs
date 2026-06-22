@@ -82,6 +82,8 @@ function updateTaskRecord(event) {
   const existing = taskRecords.get(event.taskId) ?? {
     taskId: event.taskId,
     agentId: event.agentId,
+    toolSessionId: event.toolSessionId,
+    toolSessionCwd: event.toolSessionCwd,
     message: event.message ?? '',
     threadId: event.threadId,
     status: 'running',
@@ -98,6 +100,8 @@ function updateTaskRecord(event) {
     agentId: event.type === 'task_started'
       ? event.agentId ?? existing.agentId
       : existing.agentId ?? event.agentId,
+    toolSessionId: event.toolSessionId ?? existing.toolSessionId,
+    toolSessionCwd: event.toolSessionCwd ?? existing.toolSessionCwd,
     message: event.message ?? existing.message,
     threadId: event.threadId ?? existing.threadId,
   }
