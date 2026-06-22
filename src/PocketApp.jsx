@@ -97,29 +97,7 @@ function createDemoPocketStatus() {
     tasks: {
       active: [],
       pending: [],
-      history: [
-        {
-          taskId: 'demo-codex-thread',
-          agentId: 'codex',
-          status: 'done',
-          title: '同步真实会话方案',
-          message: '让 pocket 显示桌面端 Codex 当前会话',
-          summary: '已完成 bridge 路由与桌面刷新方案；公开 Pages 使用 demo 数据展示界面形态。',
-          startedAt: new Date(now.getTime() - 58 * 60 * 1000).toISOString(),
-          finishedAt: new Date(now.getTime() - 52 * 60 * 1000).toISOString(),
-          workspaceLabel: 'ai-company-pocket',
-          workspaceRoot: '/Users/ddss/Documents/多agent协作项目（数字员工）',
-          toolSource: 'demo',
-          toolSessionId: 'demo-codex',
-          canReply: false,
-          replyBlockedReason: '公开 Pages 是静态 demo，不能直接写回本机真实工具。',
-          artifacts: ['Pocket GitHub Pages demo fallback'],
-          conversation: [
-            { role: 'user', text: '把公开页面显示成 pocket 墨水屏界面。', at: new Date(now.getTime() - 58 * 60 * 1000).toISOString() },
-            { role: 'assistant', text: '已将 Pages 根路径切到 pocket UI，并在 bridge 不可用时展示完整 demo 状态。', at: new Date(now.getTime() - 52 * 60 * 1000).toISOString() },
-          ],
-        },
-      ],
+      history: [],
       recentCommands: [],
     },
   }
