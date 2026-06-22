@@ -148,10 +148,14 @@ function OpenClawSprite() {
         <circle className="pk-outline" cx="42" cy="48" r="31" />
         <circle className="pk-mid" cx="42" cy="48" r="27" />
         <path className="pk-light" d="M22 38 C27 25 42 18 57 27 C43 27 32 31 22 38 Z" />
-        <circle className="pk-outline pk-cheek-l" cx="15" cy="48" r="10" />
-        <circle className="pk-outline pk-cheek-r" cx="69" cy="48" r="10" />
-        <circle className="pk-mid" cx="15" cy="48" r="7" />
-        <circle className="pk-light" cx="69" cy="48" r="7" />
+        <g className="pk-openclaw-hand pk-openclaw-hand-l">
+          <circle className="pk-outline" cx="15" cy="48" r="10" />
+          <circle className="pk-mid" cx="15" cy="48" r="7" />
+        </g>
+        <g className="pk-openclaw-hand pk-openclaw-hand-r">
+          <circle className="pk-outline" cx="69" cy="48" r="10" />
+          <circle className="pk-light" cx="69" cy="48" r="7" />
+        </g>
         <circle className="pk-outline" cx="32" cy="41" r="6" />
         <circle className="pk-outline" cx="53" cy="41" r="6" />
         <circle className="pk-paper" cx="30" cy="39" r="2" />

@@ -4061,9 +4061,19 @@ button {
   animation-delay: 0.45s;
 }
 
-.pocket-tool-run .pocket-sprite-openclaw .pk-cheek-r,
-.pocket-tool-ok .pocket-sprite-openclaw .pk-cheek-r {
-  animation: pocket-openclaw-cheek-wave 0.78s steps(1, end) infinite;
+.pocket-sprite-openclaw .pk-openclaw-hand {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.pocket-tool-run .pocket-sprite-openclaw .pk-openclaw-hand-l,
+.pocket-tool-ok .pocket-sprite-openclaw .pk-openclaw-hand-l {
+  animation: pocket-openclaw-hand-wave-l 0.84s steps(1, end) infinite;
+}
+
+.pocket-tool-run .pocket-sprite-openclaw .pk-openclaw-hand-r,
+.pocket-tool-ok .pocket-sprite-openclaw .pk-openclaw-hand-r {
+  animation: pocket-openclaw-hand-wave-r 0.84s steps(1, end) 0.42s infinite;
 }
 
 /* 状态：运行/完成稍快，待确认描虚边，错误抖动 */
@@ -4304,9 +4314,14 @@ button {
   50% { transform: rotate(7deg); }
 }
 
-@keyframes pocket-openclaw-cheek-wave {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(3px); }
+@keyframes pocket-openclaw-hand-wave-l {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-2px, -2px); }
+}
+
+@keyframes pocket-openclaw-hand-wave-r {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, -2px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4323,7 +4338,8 @@ button {
   .pocket-sprite-claude .pk-claude-leg-4,
   .pocket-sprite-openclaw .pk-openclaw-ant-l,
   .pocket-sprite-openclaw .pk-openclaw-ant-r,
-  .pocket-sprite-openclaw .pk-cheek-r {
+  .pocket-sprite-openclaw .pk-openclaw-hand-l,
+  .pocket-sprite-openclaw .pk-openclaw-hand-r {
     animation: none;
   }
 }
