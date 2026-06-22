@@ -3860,24 +3860,14 @@ button {
 
 .pocket-main-agent {
   position: absolute;
-  left: 28px;
-  top: 42px;
-  width: 44px;
-  height: 48px;
-  background: #181914;
-  box-shadow: inset 12px 12px 0 #d7d8c8, inset -12px 12px 0 #d7d8c8;
+  left: 50%;
+  top: 38px;
+  width: 58px;
+  height: 62px;
+  display: grid;
+  place-items: end center;
+  transform: translateX(-50%);
 }
-
-.pocket-main-agent b {
-  position: absolute;
-  top: 18px;
-  width: 6px;
-  height: 6px;
-  background: #181914;
-}
-
-.pocket-main-agent b:first-child { left: 14px; }
-.pocket-main-agent b:last-child { right: 14px; }
 
 .pocket-main-desk {
   position: absolute;
@@ -3930,200 +3920,169 @@ button {
 .pocket-tool-avatar {
   position: relative;
   width: 76px;
-  height: 70px;
+  height: 76px;
   margin: 0 auto;
-  border: 4px solid #181914;
-  background: #d7d8c8;
-  transform-origin: 50% 100%;
-  animation: pocket-avatar-idle 1.4s steps(2, end) infinite;
-}
-
-.pocket-tool-face {
-  position: absolute;
-  left: 50%;
-  top: 15px;
-  width: 46px;
-  height: 26px;
   display: grid;
-  place-items: center;
-  border: 3px solid #181914;
-  background: #eef0de;
-  font-size: 15px;
-  font-weight: 900;
-  transform: translateX(-50%);
+  place-items: end center;
 }
 
-.pocket-tool-eye,
-.pocket-tool-arm,
-.pocket-tool-foot {
-  position: absolute;
+/* —— 墨水屏灰阶像素精灵 —— */
+.pocket-sprite {
   display: block;
-  background: #181914;
-}
-
-.pocket-tool-eye {
-  top: 19px;
-  width: 8px;
-  height: 8px;
-}
-
-.pocket-tool-eye-left { left: 23px; }
-.pocket-tool-eye-right { right: 23px; }
-
-.pocket-tool-arm {
-  top: 34px;
-  width: 14px;
-  height: 18px;
-}
-
-.pocket-tool-arm-left { left: -14px; }
-.pocket-tool-arm-right { right: -14px; }
-
-.pocket-tool-foot {
-  bottom: -13px;
-  width: 14px;
-  height: 13px;
-}
-
-.pocket-tool-foot-left { left: 20px; }
-.pocket-tool-foot-right { right: 20px; }
-
-.pocket-avatar-codex .pocket-tool-avatar {
   width: 82px;
-  height: 72px;
-  border-color: #24457e;
-  background:
-    linear-gradient(#6fa0ff 0 0) 6px 8px / 70px 52px no-repeat,
-    linear-gradient(#4f82ef 0 0) 16px 0 / 18px 16px no-repeat,
-    linear-gradient(#4f82ef 0 0) 34px 0 / 20px 16px no-repeat,
-    linear-gradient(#4f82ef 0 0) 52px 8px / 18px 18px no-repeat,
-    #5d8fff;
-  box-shadow: inset 0 -9px 0 #3d6edb;
+  height: 86px;
+  overflow: visible;
+  shape-rendering: crispEdges;
+  transform-origin: 50% 100%;
+  animation: pocket-avatar-idle 1.5s steps(2, end) infinite;
 }
 
-.pocket-avatar-codex .pocket-tool-face {
-  top: 19px;
-  width: 48px;
-  height: 25px;
-  border-color: #233b6d;
-  background: #17223e;
-  color: #8ff6ff;
+.pocket-sprite-main {
+  width: 58px;
+  height: 62px;
+  animation: pocket-avatar-idle 2s steps(2, end) infinite;
 }
 
-.pocket-avatar-codex .pocket-tool-eye {
-  display: none;
+.pk-ink,
+.pk-outline { fill: #181914; }
+.pk-mid { fill: #5d6259; }
+.pk-light { fill: #aeb4a5; }
+.pk-paper { fill: #eef0de; }
+.pk-shadow { fill: rgba(24, 25, 20, 0.22); }
+.pk-screen,
+.pk-ink-screen,
+.pk-ink-dot { fill: #181914; }
+.pk-screen-shell { fill: #30342f; }
+.pk-screen-line {
+  fill: none;
+  stroke: #181914;
+  stroke-width: 3;
+  stroke-linecap: square;
+}
+.pk-screen-glyph {
+  fill: none;
+  stroke: #eef0de;
+  stroke-width: 3;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+.pk-paper-line {
+  fill: none;
+  stroke: #eef0de;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.pk-antenna,
+.pk-band {
+  fill: none;
+  stroke: #181914;
+  stroke-width: 3;
+  stroke-linecap: round;
 }
 
-.pocket-avatar-codex .pocket-tool-arm,
-.pocket-avatar-codex .pocket-tool-foot {
-  background: #4f82ef;
-  border: 3px solid #24457e;
+.pocket-sprite-codex {
+  width: 86px;
+  height: 88px;
 }
 
-.pocket-avatar-codex .pocket-tool-arm-left { left: -12px; }
-.pocket-avatar-codex .pocket-tool-arm-right { right: -12px; }
-
-.pocket-avatar-claude-code .pocket-tool-avatar {
-  width: 78px;
-  height: 66px;
-  border: 0;
-  background:
-    linear-gradient(#181914 0 0) 26px 18px / 10px 10px no-repeat,
-    linear-gradient(#181914 0 0) 48px 18px / 10px 10px no-repeat,
-    linear-gradient(#d87553 0 0) 0 26px / 78px 38px no-repeat,
-    linear-gradient(#d87553 0 0) 14px 0 / 50px 36px no-repeat;
-  box-shadow: none;
+.pocket-sprite-codex .pk-codex-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
 
-.pocket-avatar-claude-code .pocket-tool-face,
-.pocket-avatar-claude-code .pocket-tool-eye {
-  display: none;
+.pocket-sprite-codex .pk-codex-clouds {
+  transform-box: fill-box;
+  transform-origin: 50% 56%;
+  animation: pocket-codex-cloud-puff 2.2s steps(1, end) infinite;
 }
 
-.pocket-avatar-claude-code .pocket-tool-arm {
-  top: 26px;
-  width: 20px;
-  height: 18px;
-  background: #d87553;
+.pocket-sprite-codex .pk-arm-l,
+.pocket-sprite-codex .pk-arm-r {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
 }
 
-.pocket-avatar-claude-code .pocket-tool-arm-left { left: -14px; }
-.pocket-avatar-claude-code .pocket-tool-arm-right { right: -14px; }
-
-.pocket-avatar-claude-code .pocket-tool-foot {
-  bottom: -12px;
-  width: 14px;
-  height: 30px;
-  background: #d87553;
+.pocket-tool-run .pocket-sprite-codex .pk-arm-l,
+.pocket-tool-ok .pocket-sprite-codex .pk-arm-l {
+  animation: pocket-codex-arm-type 0.7s steps(1, end) infinite;
 }
 
-.pocket-avatar-openclaw .pocket-tool-avatar {
-  width: 72px;
-  height: 72px;
-  border-color: #8f2726;
-  border-radius: 28px 28px 24px 24px;
-  background: #e74842;
-  box-shadow: inset 0 -10px 0 #cf3432;
+.pocket-tool-run .pocket-sprite-codex .pk-arm-r,
+.pocket-tool-ok .pocket-sprite-codex .pk-arm-r {
+  animation: pocket-codex-arm-type 0.7s steps(1, end) 0.35s infinite;
 }
 
-.pocket-avatar-openclaw .pocket-tool-avatar::before,
-.pocket-avatar-openclaw .pocket-tool-avatar::after {
-  content: '';
-  position: absolute;
-  top: -12px;
-  width: 20px;
-  height: 18px;
-  border-top: 4px solid #e74842;
+.pocket-sprite-codex .pk-cursor {
+  animation: pocket-pixel-blink 0.95s steps(1, end) infinite;
 }
 
-.pocket-avatar-openclaw .pocket-tool-avatar::before {
-  left: 12px;
-  transform: rotate(-28deg);
+.pocket-sprite-claude {
+  width: 86px;
+  height: 88px;
 }
 
-.pocket-avatar-openclaw .pocket-tool-avatar::after {
-  right: 12px;
-  transform: rotate(28deg);
+.pocket-sprite-claude .pk-claude-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
 
-.pocket-avatar-openclaw .pocket-tool-face {
-  display: none;
+.pocket-tool-run .pocket-sprite-claude .pk-claude-leg-1,
+.pocket-tool-ok .pocket-sprite-claude .pk-claude-leg-1,
+.pocket-tool-run .pocket-sprite-claude .pk-claude-leg-3,
+.pocket-tool-ok .pocket-sprite-claude .pk-claude-leg-3 {
+  animation: pocket-claude-foot-tap 0.62s steps(1, end) infinite;
 }
 
-.pocket-avatar-openclaw .pocket-tool-eye {
-  top: 25px;
-  width: 10px;
-  height: 10px;
-  border: 3px solid #181914;
-  background: #8ff6ff;
+.pocket-tool-run .pocket-sprite-claude .pk-claude-leg-2,
+.pocket-tool-ok .pocket-sprite-claude .pk-claude-leg-2,
+.pocket-tool-run .pocket-sprite-claude .pk-claude-leg-4,
+.pocket-tool-ok .pocket-sprite-claude .pk-claude-leg-4 {
+  animation: pocket-claude-foot-tap 0.62s steps(1, end) 0.31s infinite;
 }
 
-.pocket-avatar-openclaw .pocket-tool-arm {
-  top: 32px;
-  width: 18px;
-  height: 22px;
-  border-radius: 12px;
-  background: #e74842;
+.pocket-sprite-openclaw {
+  width: 86px;
+  height: 88px;
 }
 
-.pocket-avatar-openclaw .pocket-tool-foot {
-  bottom: -11px;
-  width: 12px;
-  height: 15px;
-  background: #a42c2b;
+.pocket-sprite-openclaw .pk-openclaw-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
 
-.pocket-tool-run .pocket-tool-avatar,
-.pocket-tool-ok .pocket-tool-avatar {
-  animation-duration: 0.8s;
+.pocket-sprite-openclaw .pk-openclaw-ant-l,
+.pocket-sprite-openclaw .pk-openclaw-ant-r {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pocket-openclaw-antenna 1.7s steps(1, end) infinite;
 }
 
-.pocket-tool-wait .pocket-tool-avatar {
-  filter: saturate(0.6) contrast(1.2);
+.pocket-sprite-openclaw .pk-openclaw-ant-r {
+  animation-delay: 0.45s;
 }
 
-.pocket-tool-err .pocket-tool-avatar {
-  animation: pocket-avatar-alert 0.35s steps(2, end) infinite;
+.pocket-tool-run .pocket-sprite-openclaw .pk-cheek-r,
+.pocket-tool-ok .pocket-sprite-openclaw .pk-cheek-r {
+  animation: pocket-openclaw-cheek-wave 0.78s steps(1, end) infinite;
+}
+
+/* 状态：运行/完成稍快，待确认描虚边，错误抖动 */
+.pocket-tool-run .pocket-sprite,
+.pocket-tool-ok .pocket-sprite {
+  animation-duration: 0.85s;
+}
+
+.pocket-tool-wait .pocket-sprite {
+  opacity: 0.78;
+}
+
+.pocket-tool-err .pocket-sprite {
+  animation: pocket-avatar-alert 0.34s steps(2, end) infinite;
+}
+
+.pocket-tool-offline .pocket-sprite,
+.pocket-tool-idle .pocket-sprite {
+  opacity: 0.92;
 }
 
 .pocket-tool-desk {
@@ -4320,9 +4279,51 @@ button {
   50% { transform: translateX(4px); }
 }
 
+@keyframes pocket-pixel-blink {
+  0%, 54% { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+
+@keyframes pocket-codex-cloud-puff {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.03); }
+}
+
+@keyframes pocket-codex-arm-type {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+@keyframes pocket-claude-foot-tap {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+@keyframes pocket-openclaw-antenna {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(7deg); }
+}
+
+@keyframes pocket-openclaw-cheek-wave {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pocket-tool-avatar,
-  .pocket-main-screen i {
+  .pocket-main-screen i,
+  .pocket-sprite,
+  .pocket-sprite-codex .pk-codex-clouds,
+  .pocket-sprite-codex .pk-arm-l,
+  .pocket-sprite-codex .pk-arm-r,
+  .pocket-sprite-codex .pk-cursor,
+  .pocket-sprite-claude .pk-claude-leg-1,
+  .pocket-sprite-claude .pk-claude-leg-2,
+  .pocket-sprite-claude .pk-claude-leg-3,
+  .pocket-sprite-claude .pk-claude-leg-4,
+  .pocket-sprite-openclaw .pk-openclaw-ant-l,
+  .pocket-sprite-openclaw .pk-openclaw-ant-r,
+  .pocket-sprite-openclaw .pk-cheek-r {
     animation: none;
   }
 }

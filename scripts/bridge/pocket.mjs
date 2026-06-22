@@ -56,6 +56,7 @@ let cachedStatus = null
 let cachedStatusAt = 0
 let lastOpenClawStatus = null
 let lastOpenClawUsage = null
+let lastClaudeCliUsage = null
 let cachedLocalUsage = null
 let cachedLocalUsageAt = 0
 
@@ -366,14 +367,19 @@ function parseClaudeUsageLine(text, pattern) {
 }
 
 async function readClaudeCliUsage() {
-  const result = await runCommandAsync('claude', ['-p', '/usage', '--output-format', 'json'], { timeout: 8000 })
-  if (result.status !== 0 || !result.stdout.trim()) return null
-  const payload = parseJsonFromOutput(result.stdout)
-  const text = String(payload?.result ?? '')
-  const session = parseClaudeUsageLine(text, /Current session:\s*(\d+)%\s*used\s*·\s*resets\s*([^\n]+)/i)
-  const week = parseClaudeUsageLine(text, /Current week(?:\s*\([^)]*\))?:\s*(\d+)%\s*used\s*·\s*resets\s*([^\n]+)/i)
-  if (!session && !week) return null
-  return {
+  let session = null
+  let week = null
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, 300))
+    const result = await runCommandAsync('claude', ['-p', '/usage', '--output-format', 'text'], { timeout: 8000 })
+    if (result.status !== 0 || !result.stdout.trim()) continue
+    const text = String(result.stdout ?? '')
+    session = parseClaudeUsageLine(text, /Current session:\s*(\d+)%\s*used\s*·\s*resets\s*([^\n]+)/i)
+    week = parseClaudeUsageLine(text, /Current week(?:\s*\([^)]*\))?:\s*(\d+)%\s*used\s*·\s*resets\s*([^\n]+)/i)
+    if (session || week) break
+  }
+  if (!session && !week) return lastClaudeCliUsage ? { ...lastClaudeCliUsage, stale: true } : null
+  const usage = {
     available: true,
     label: 'limits',
     value: `${session ? `5h ${session.used_percent}%` : '5h --'} / ${week ? `7d ${week.used_percent}%` : '7d --'}`,
@@ -394,6 +400,8 @@ async function readClaudeCliUsage() {
       source: 'claude /usage',
     },
   }
+  lastClaudeCliUsage = usage
+  return usage
 }
 
 async function readLocalUsage({ force = false } = {}) {
