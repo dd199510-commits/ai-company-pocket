@@ -21,6 +21,7 @@ import { activeTasks, clients, pendingActions, readHistory } from './events.mjs'
 import { buildFileIndex, getFileIndex, getFileIndexInfo, publicFileEntry } from './executors/file.mjs'
 import { checkPort } from './lib.mjs'
 import { confirmAction, startTask } from './pipeline.mjs'
+import { buildPocketStatus, startPocketCommand, startPocketSetup } from './pocket.mjs'
 
 // 仅允许本机前端来源访问，降低恶意网页通过 localhost 调用敏感接口的风险。
 const ALLOWED_ORIGIN_PATTERN = /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?$/i
@@ -125,6 +126,11 @@ const server = createServer(async (request, response) => {
       return
     }
 
+    if (request.method === 'GET' && url.pathname === '/api/pocket/status') {
+      sendJson(response, 200, await buildPocketStatus({ force: url.searchParams.get('force') === '1' }))
+      return
+    }
+
     if (request.method === 'GET' && url.pathname === '/api/history') {
       const limit = Number.parseInt(url.searchParams.get('limit') ?? '20', 10)
       sendJson(response, 200, {
@@ -170,6 +176,33 @@ const server = createServer(async (request, response) => {
         threadId: body.threadId,
       })
       sendJson(response, 202, result)
+      return
+    }
+
+    if (request.method === 'POST' && url.pathname === '/api/pocket/command') {
+      const body = await readJson(request)
+      const target = body.target ?? 'supervisor'
+      if (target === 'supervisor' || target === 'main') {
+        sendJson(response, 202, await startTask({
+          message: body.message || '汇报当前 AI 公司状态',
+          requestedAgentId: 'main',
+          threadId: 'pocket',
+        }))
+        return
+      }
+      sendJson(response, 202, await startPocketCommand({
+        target,
+        message: body.message,
+      }))
+      return
+    }
+
+    if (request.method === 'POST' && url.pathname === '/api/pocket/setup') {
+      const body = await readJson(request)
+      sendJson(response, 202, await startPocketSetup({
+        target: body.target,
+        mode: body.mode,
+      }))
       return
     }
 

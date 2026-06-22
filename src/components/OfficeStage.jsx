@@ -19,16 +19,24 @@ function stagePoint(agent) {
   }
 }
 
+function stationSize(agent) {
+  return {
+    w: (Number.parseFloat(agent.layout.w) / 100) * OFFICE_STAGE_WIDTH,
+    h: (Number.parseFloat(agent.layout.h) / 100) * OFFICE_STAGE_HEIGHT,
+  }
+}
+
 /** 角色脚底的地面锚点（舞台像素坐标），行走小人以此为基准。 */
 function personAnchor(agent) {
   const point = stagePoint(agent)
-  const stationHeight = (Number.parseFloat(agent.layout.h) / 100) * OFFICE_STAGE_HEIGHT
+  const stationHeight = stationSize(agent).h
   return { x: point.x, y: point.y + stationHeight / 2 - 4 }
 }
 
 const WALK_SPEED = 72 // px/s，正常步行
 const RECALL_SPEED_MULTIPLIER = 2.8 // 被派活时快步赶回
-const VISIT_FRONT_OFFSET_Y = 46 // 拜访同事时站在工位前方，避免盖住对方角色。
+const VISIT_FRONT_OFFSET_Y = 58 // 拜访同事时站在工位前方，避免盖住对方角色。
+const VISIT_SIDE_GAP = 36
 
 const PX = 6
 const DESKTOP_AGENT_PERSONAS = {
@@ -99,6 +107,37 @@ function StatusBadges() {
   )
 }
 
+function ClaudeAgentMascot({ className, walker = false }) {
+  return (
+    <g className={className}>
+      <g className="claude-agent-body">
+        <g className={walker ? 'claude-walker-arm-l' : undefined}>
+          <rect className="claude-arm claude-arm-left" x="20" y="56" width="22" height="17" />
+        </g>
+        <g className={walker ? 'claude-walker-arm-r' : undefined}>
+          <rect className="claude-arm claude-arm-right" x="108" y="56" width="22" height="17" />
+        </g>
+        <rect className="claude-torso" x="42" y="35" width="66" height="60" />
+        <g className={walker ? 'claude-walker-leg-l' : undefined}>
+          <rect className="claude-leg claude-leg-1" x="42" y="95" width="12" height="22" />
+          <rect className="claude-leg claude-leg-2" x="61" y="95" width="12" height="22" />
+        </g>
+        <g className={walker ? 'claude-walker-leg-r' : undefined}>
+          <rect className="claude-leg claude-leg-3" x="86" y="95" width="12" height="22" />
+          <rect className="claude-leg claude-leg-4" x="105" y="95" width="12" height="22" />
+        </g>
+        <rect className="claude-eye claude-eye-left" x="58" y="48" width="10" height="10" />
+        <rect className="claude-eye claude-eye-right" x="90" y="48" width="10" height="10" />
+      </g>
+      <g className="claude-thought-pixels">
+        <rect className="claude-thought claude-thought-1" x="64" y="24" width="7" height="7" />
+        <rect className="claude-thought claude-thought-2" x="78" y="21" width="5" height="5" />
+        <rect className="claude-thought claude-thought-3" x="91" y="25" width="6" height="6" />
+      </g>
+    </g>
+  )
+}
+
 function ClaudeDesktopCharacter({ agent }) {
   return (
     <svg
@@ -132,24 +171,7 @@ function ClaudeDesktopCharacter({ agent }) {
         </g>
       </g>
 
-      <g className="claude-agent-core">
-        <g className="claude-agent-body">
-          <rect className="claude-arm claude-arm-left" x="20" y="56" width="22" height="17" />
-          <rect className="claude-arm claude-arm-right" x="108" y="56" width="22" height="17" />
-          <rect className="claude-torso" x="42" y="35" width="66" height="60" />
-          <rect className="claude-leg claude-leg-1" x="42" y="95" width="12" height="22" />
-          <rect className="claude-leg claude-leg-2" x="61" y="95" width="12" height="22" />
-          <rect className="claude-leg claude-leg-3" x="86" y="95" width="12" height="22" />
-          <rect className="claude-leg claude-leg-4" x="105" y="95" width="12" height="22" />
-          <rect className="claude-eye claude-eye-left" x="58" y="48" width="10" height="10" />
-          <rect className="claude-eye claude-eye-right" x="90" y="48" width="10" height="10" />
-        </g>
-        <g className="claude-thought-pixels">
-          <rect className="claude-thought claude-thought-1" x="64" y="24" width="7" height="7" />
-          <rect className="claude-thought claude-thought-2" x="78" y="21" width="5" height="5" />
-          <rect className="claude-thought claude-thought-3" x="91" y="25" width="6" height="6" />
-        </g>
-      </g>
+      <ClaudeAgentMascot className="claude-agent-core" />
 
       <g className="claude-work-pixels">
         <rect className="claude-work-pixel claude-work-pixel-1" x="43" y="31" width="5" height="5" />
@@ -221,6 +243,36 @@ function CodexPetCharacter({ agent }) {
   )
 }
 
+function PenguinPixelMascot({ className }) {
+  return (
+    <g className={className}>
+      {/* 胖企鹅主体：沿用之前更圆、更宽的站立造型。 */}
+      {px(9, 2, 7, 1, 'pg-blk')}
+      {px(8, 3, 9, 1, 'pg-blk')}
+      {px(7, 4, 11, 1, 'pg-blk')}
+      {px(7, 5, 2, 4, 'pg-blk')}
+      {px(16, 5, 2, 4, 'pg-blk')}
+      {px(9, 5, 7, 4, 'pg-wht')}
+      {px(7, 9, 11, 1, 'pg-blk')}
+      <g className="pg-eyes">
+        {px(10, 6, 1, 2, 'pg-eye')}
+        {px(14, 6, 1, 2, 'pg-eye')}
+      </g>
+      {px(11, 7, 3, 2, 'pg-org')}
+      {px(6, 10, 13, 7, 'pg-blk')}
+      {px(7, 17, 11, 1, 'pg-blk')}
+      {px(9, 11, 7, 6, 'pg-wht')}
+      <g className="pg-flipper pg-flipper-l">{px(5, 11, 1, 4, 'pg-blk')}</g>
+      <g className="pg-flipper pg-flipper-r">{px(19, 11, 1, 4, 'pg-blk')}</g>
+      {px(7, 9, 11, 1, 'pg-scarf')}
+      {px(6, 10, 13, 1, 'pg-scarf')}
+      {px(7, 11, 2, 5, 'pg-scarf')}
+      <g className="pg-foot pg-foot-l">{px(8, 18, 3, 2, 'pg-org')}</g>
+      <g className="pg-foot pg-foot-r">{px(14, 18, 3, 2, 'pg-org')}</g>
+    </g>
+  )
+}
+
 function PenguinCharacter({ agent }) {
   return (
     <svg
@@ -239,37 +291,9 @@ function PenguinCharacter({ agent }) {
     >
       <rect className="fig-ground" x="48" y="118" width="54" height="5" />
 
-      {/* 像素企鹅（站立版）：方块网格，脚落在最底部 */}
-      <g className="pg-core">
-        {/* 头 黑 */}
-        {px(9, 2, 7, 1, 'pg-blk')}
-        {px(8, 3, 9, 1, 'pg-blk')}
-        {px(7, 4, 11, 1, 'pg-blk')}
-        {px(7, 5, 2, 4, 'pg-blk')}
-        {px(16, 5, 2, 4, 'pg-blk')}
-        {px(9, 5, 7, 4, 'pg-wht')}
-        {px(7, 9, 11, 1, 'pg-blk')}
-        {/* 眼 */}
-        <g className="pg-eyes">
-          {px(10, 6, 1, 2, 'pg-eye')}
-          {px(14, 6, 1, 2, 'pg-eye')}
-        </g>
-        {/* 喙 橙 */}
-        {px(11, 7, 3, 2, 'pg-org')}
-        {/* 身体 黑 + 肚 白 */}
-        {px(6, 10, 13, 7, 'pg-blk')}
-        {px(7, 17, 11, 1, 'pg-blk')}
-        {px(9, 11, 7, 6, 'pg-wht')}
-        {/* 鳍 黑 */}
-        <g className="pg-flipper pg-flipper-l">{px(5, 11, 1, 4, 'pg-blk')}</g>
-        <g className="pg-flipper pg-flipper-r">{px(19, 11, 1, 4, 'pg-blk')}</g>
-        {/* 围巾 红 + 飘带 */}
-        {px(7, 9, 11, 1, 'pg-scarf')}
-        {px(6, 10, 13, 1, 'pg-scarf')}
-        {px(7, 11, 2, 5, 'pg-scarf')}
-        {/* 脚 橙 */}
-        <g className="pg-foot pg-foot-l">{px(8, 18, 3, 2, 'pg-org')}</g>
-        <g className="pg-foot pg-foot-r">{px(14, 18, 3, 2, 'pg-org')}</g>
+      {/* 工位和走动共用同一套胖企鹅本体。 */}
+      <g className="pg-stage-scale">
+        <PenguinPixelMascot className="pg-core" />
       </g>
 
       <g className="penguin-bubbles" aria-hidden="true">
@@ -534,21 +558,9 @@ function AgentCharacter({ agent }) {
 function ClaudeWalkerSprite() {
   return (
     <svg className="walker-svg walker-persona-claude" viewBox="0 0 90 102" aria-hidden="true">
-      <rect className="claude-walker-arm claude-walker-arm-l" x="12" y="38" width="18" height="14" />
-      <rect className="claude-walker-arm claude-walker-arm-r" x="60" y="38" width="18" height="14" />
-      <rect className="claude-walker-body" x="27" y="20" width="36" height="46" />
-      <rect className="claude-walker-eye" x="37" y="31" width="7" height="7" />
-      <rect className="claude-walker-eye" x="51" y="31" width="7" height="7" />
-      <g className="claude-walker-leg-l">
-        <rect className="claude-walker-leg" x="29" y="66" width="9" height="20" />
-        <rect className="claude-walker-leg" x="41" y="66" width="8" height="20" />
+      <g className="claude-walker-scale" transform="translate(-8 7) scale(0.72)">
+        <ClaudeAgentMascot className="claude-walker-core" walker />
       </g>
-      <g className="claude-walker-leg-r">
-        <rect className="claude-walker-leg" x="52" y="66" width="8" height="20" />
-        <rect className="claude-walker-leg" x="62" y="66" width="9" height="20" />
-      </g>
-      <rect className="claude-walker-cursor" x="36" y="7" width="6" height="6" />
-      <rect className="claude-walker-cursor claude-walker-cursor-2" x="49" y="11" width="5" height="5" />
     </svg>
   )
 }
@@ -583,37 +595,11 @@ function CodexWalkerSprite() {
 
 function PenguinWalkerSprite() {
   return (
-    <svg className="walker-svg walker-persona-penguin" viewBox="0 0 90 102" aria-hidden="true">
-      {/* 像素企鹅（走动版）：脚画在 viewBox 最底部，天然贴地不悬空 */}
-      <g className="pg-walk-core">
-        {/* 头 黑 + 脸 白 */}
-        {px(5, 1, 5, 1, 'pg-blk')}
-        {px(4, 2, 7, 1, 'pg-blk')}
-        {px(4, 3, 7, 1, 'pg-blk')}
-        {px(4, 4, 1, 3, 'pg-blk')}
-        {px(10, 4, 1, 3, 'pg-blk')}
-        {px(5, 4, 5, 3, 'pg-wht')}
-        {px(4, 7, 7, 1, 'pg-blk')}
-        {/* 眼 */}
-        <g className="pg-eyes">
-          {px(6, 5, 1, 1, 'pg-eye')}
-          {px(8, 5, 1, 1, 'pg-eye')}
+    <svg className="walker-svg walker-sprite-penguin" viewBox="0 0 90 102" aria-hidden="true">
+      <g transform="translate(-26 -21)">
+        <g transform="scale(0.94)">
+          <PenguinPixelMascot className="pg-walk-core" />
         </g>
-        {/* 喙 橙 */}
-        {px(6, 6, 3, 1, 'pg-org')}
-        {/* 身体 黑 + 肚 白 */}
-        {px(3, 9, 9, 6, 'pg-blk')}
-        {px(4, 15, 7, 1, 'pg-blk')}
-        {px(5, 10, 5, 5, 'pg-wht')}
-        {/* 鳍 黑 */}
-        <g className="pg-flipper pg-flipper-l">{px(2, 10, 1, 3, 'pg-blk')}</g>
-        <g className="pg-flipper pg-flipper-r">{px(12, 10, 1, 3, 'pg-blk')}</g>
-        {/* 围巾 红 + 飘带 */}
-        {px(4, 7, 7, 2, 'pg-scarf')}
-        {px(5, 9, 2, 2, 'pg-scarf')}
-        {/* 脚 橙（底部） */}
-        <g className="pg-foot pg-foot-l">{px(4, 16, 3, 1, 'pg-org')}</g>
-        <g className="pg-foot pg-foot-r">{px(8, 16, 3, 1, 'pg-org')}</g>
       </g>
     </svg>
   )
@@ -1080,8 +1066,9 @@ function useAmbientLife(agents) {
       const partner = candidates[Math.floor(Math.random() * candidates.length)]
       const partnerHome = personAnchor(partner)
       const side = home.x <= partnerHome.x ? -1 : 1
+      const sideOffset = Math.max(80, stationSize(partner).w / 2 + VISIT_SIDE_GAP)
       const dest = {
-        x: partnerHome.x + side * 80,
+        x: Math.min(Math.max(partnerHome.x + side * sideOffset, 56), OFFICE_STAGE_WIDTH - 56),
         y: Math.min(partnerHome.y + VISIT_FRONT_OFFSET_Y, OFFICE_STAGE_HEIGHT - 56),
       }
       setWalkers((current) => ({ ...current, [id]: spawn }))

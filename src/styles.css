@@ -2987,7 +2987,6 @@ button {
 .walker-layer {
   position: absolute;
   inset: 0;
-  z-index: 6;
   pointer-events: none;
 }
 
@@ -3070,6 +3069,24 @@ button {
 
 .walker-persona-claude .claude-walker-cursor-2 {
   animation-delay: 0.42s;
+}
+
+.walker-persona-claude .claude-walker-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.walker-persona-claude .claude-thought {
+  opacity: 0;
+  animation: claude-thought-pop 2.9s steps(1, end) infinite;
+}
+
+.walker-persona-claude .claude-thought-2 {
+  animation-delay: 0.35s;
+}
+
+.walker-persona-claude .claude-thought-3 {
+  animation-delay: 0.7s;
 }
 
 .walker-persona-codex .codex-walker-core {
@@ -3383,7 +3400,7 @@ button {
   transition: opacity 180ms ease;
 }
 
-.agent-station-away .figure-persona-penguin .penguin-core,
+.agent-station-away .figure-persona-penguin .pg-stage-scale,
 .agent-station-away .figure-persona-penguin .penguin-bubbles {
   opacity: 0;
   transition: opacity 180ms ease;
@@ -3504,6 +3521,52 @@ button {
   animation: fig-blink 4.8s steps(1, end) infinite;
 }
 
+.figure-persona-penguin.figure-state-working .pg-core {
+  animation: pg-office-work 0.58s steps(1, end) infinite;
+}
+
+.figure-persona-penguin.figure-state-working .pg-flipper-l,
+.figure-persona-penguin.figure-state-working .pg-flipper-r {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: pg-office-type 0.58s steps(1, end) infinite;
+}
+
+.figure-persona-penguin.figure-state-working .pg-flipper-r {
+  animation-delay: 0.29s;
+}
+
+.figure-persona-penguin.figure-state-waiting .pg-flipper-r {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: pg-office-wave 0.8s steps(1, end) infinite;
+}
+
+.figure-persona-penguin.figure-state-failed .pg-core {
+  animation: pg-office-error 0.35s steps(2, end) 3;
+}
+
+@keyframes pg-office-work {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+}
+
+@keyframes pg-office-type {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(3px) rotate(7deg); }
+}
+
+@keyframes pg-office-wave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-16deg); }
+}
+
+@keyframes pg-office-error {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px) rotate(-2deg); }
+  75% { transform: translateX(3px) rotate(2deg); }
+}
+
 /* —— 走动版：复位为基础 walker 尺寸；整体略下压，脚踩实地面 —— */
 .walker-persona-penguin {
   width: 90px;
@@ -3575,6 +3638,8 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .figure-persona-penguin .pg-core,
   .figure-persona-penguin .pg-eyes,
+  .figure-persona-penguin .pg-flipper-l,
+  .figure-persona-penguin .pg-flipper-r,
   .walker-persona-penguin .pg-walk-core,
   .walker-walking .pg-walk-core,
   .walker-walking .pg-foot-l,
@@ -3582,5 +3647,698 @@ button {
   .walker-walking .pg-flipper-l,
   .walker-walking .pg-flipper-r {
     animation: none;
+  }
+}
+
+/* ============================================================
+   Pocket AI Company · 便携墨水屏 / 三按钮 MVP
+   ============================================================ */
+
+.pocket-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #d8d8cf;
+  color: #171812;
+  font-family: "Courier New", "Menlo", monospace;
+  image-rendering: pixelated;
+}
+
+.pocket-screen {
+  position: relative;
+  width: min(100vw, 800px);
+  box-sizing: border-box;
+  aspect-ratio: 5 / 3;
+  border: 6px solid #181914;
+  background:
+    linear-gradient(90deg, rgba(24, 25, 20, 0.05) 1px, transparent 1px) 0 0 / 8px 8px,
+    linear-gradient(180deg, rgba(24, 25, 20, 0.04) 1px, transparent 1px) 0 0 / 8px 8px,
+    #d7d8c8;
+  box-shadow: inset 0 0 0 4px #f0f0de;
+  overflow: hidden;
+}
+
+.pocket-screen * {
+  box-sizing: border-box;
+}
+
+.pocket-statusbar {
+  height: 48px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  padding: 0 24px 8px;
+  border-bottom: 3px solid #181914;
+}
+
+.pocket-statusbar h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.pocket-statusbar div {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.pocket-battery::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 14px;
+  margin-right: 8px;
+  border: 3px solid #181914;
+  vertical-align: -1px;
+  box-shadow: inset 10px 0 0 #181914;
+}
+
+.pocket-usage-strip {
+  height: 74px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 8px 18px;
+  border-bottom: 3px solid #181914;
+}
+
+.pocket-usage-tile {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: 15px minmax(0, 1fr);
+  gap: 4px;
+  align-content: start;
+  padding: 2px 7px 5px;
+  border-left: 2px solid rgba(24, 25, 20, 0.62);
+  background: rgba(24, 25, 20, 0.035);
+}
+
+.pocket-usage-tile strong {
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-usage-rows {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.pocket-usage-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 30px minmax(48px, 1fr) 32px;
+  gap: 4px;
+  align-items: center;
+}
+
+.pocket-usage-row span,
+.pocket-usage-row em {
+  overflow: hidden;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-usage-row i {
+  display: block;
+  height: 12px;
+  border: 2px solid #181914;
+  background:
+    repeating-linear-gradient(90deg, rgba(24, 25, 20, 0.1) 0 2px, transparent 2px 7px);
+  overflow: hidden;
+}
+
+.pocket-usage-row i b {
+  display: block;
+  height: 100%;
+  background: #181914;
+}
+
+.pocket-usage-row em {
+  text-align: right;
+}
+
+.pocket-usage-row-empty i {
+  background:
+    repeating-linear-gradient(90deg, rgba(24, 25, 20, 0.12) 0 2px, transparent 2px 6px);
+}
+
+.pocket-usage-tile-tokens .pocket-usage-row {
+  grid-template-columns: 43px minmax(44px, 1fr) 42px;
+}
+
+.pocket-usage-tile-tokens .pocket-usage-row i {
+  background: rgba(24, 25, 20, 0.08);
+}
+
+.pocket-office {
+  position: relative;
+  height: 236px;
+  margin: 0 18px;
+  border-left: 3px solid #181914;
+  border-right: 3px solid #181914;
+  background:
+    linear-gradient(90deg, transparent 0 39px, rgba(24, 25, 20, 0.18) 40px, transparent 42px) 0 0 / 80px 80px,
+    linear-gradient(180deg, transparent 0 39px, rgba(24, 25, 20, 0.16) 40px, transparent 42px) 0 0 / 80px 80px;
+}
+
+.pocket-wall-board {
+  position: absolute;
+  left: 214px;
+  top: 16px;
+  width: 332px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 3px solid #181914;
+  background: #c8cab8;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.pocket-mainframe {
+  position: absolute;
+  left: 350px;
+  top: 72px;
+  width: 100px;
+  height: 112px;
+}
+
+.pocket-main-screen {
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #181914;
+  background: #eef0de;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pocket-main-screen i {
+  position: absolute;
+  right: 12px;
+  top: 11px;
+  width: 8px;
+  height: 8px;
+  background: #181914;
+  animation: pocket-blink 1.2s steps(1, end) infinite;
+}
+
+.pocket-main-agent {
+  position: absolute;
+  left: 28px;
+  top: 42px;
+  width: 44px;
+  height: 48px;
+  background: #181914;
+  box-shadow: inset 12px 12px 0 #d7d8c8, inset -12px 12px 0 #d7d8c8;
+}
+
+.pocket-main-agent b {
+  position: absolute;
+  top: 18px;
+  width: 6px;
+  height: 6px;
+  background: #181914;
+}
+
+.pocket-main-agent b:first-child { left: 14px; }
+.pocket-main-agent b:last-child { right: 14px; }
+
+.pocket-main-desk {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  border-top: 4px solid #181914;
+  background: #b9bca8;
+}
+
+.pocket-mainframe-selected .pocket-main-screen,
+.pocket-tool-selected,
+.pocket-facility-selected {
+  outline: 4px solid #181914;
+  outline-offset: 3px;
+}
+
+.pocket-route-line {
+  position: absolute;
+  top: 184px;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #181914 0 10px, transparent 10px 18px);
+}
+
+.pocket-route-line-left {
+  left: 180px;
+  width: 170px;
+}
+
+.pocket-route-line-right {
+  left: 426px;
+  width: 170px;
+}
+
+.pocket-tool {
+  position: absolute;
+  width: 118px;
+  height: 126px;
+  transform: translate(-50%, -50%);
+}
+
+.pocket-tool-roof {
+  width: 82px;
+  height: 8px;
+  margin: 0 auto;
+  background: #181914;
+}
+
+.pocket-tool-avatar {
+  position: relative;
+  width: 76px;
+  height: 70px;
+  margin: 0 auto;
+  border: 4px solid #181914;
+  background: #d7d8c8;
+  transform-origin: 50% 100%;
+  animation: pocket-avatar-idle 1.4s steps(2, end) infinite;
+}
+
+.pocket-tool-face {
+  position: absolute;
+  left: 50%;
+  top: 15px;
+  width: 46px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #181914;
+  background: #eef0de;
+  font-size: 15px;
+  font-weight: 900;
+  transform: translateX(-50%);
+}
+
+.pocket-tool-eye,
+.pocket-tool-arm,
+.pocket-tool-foot {
+  position: absolute;
+  display: block;
+  background: #181914;
+}
+
+.pocket-tool-eye {
+  top: 19px;
+  width: 8px;
+  height: 8px;
+}
+
+.pocket-tool-eye-left { left: 23px; }
+.pocket-tool-eye-right { right: 23px; }
+
+.pocket-tool-arm {
+  top: 34px;
+  width: 14px;
+  height: 18px;
+}
+
+.pocket-tool-arm-left { left: -14px; }
+.pocket-tool-arm-right { right: -14px; }
+
+.pocket-tool-foot {
+  bottom: -13px;
+  width: 14px;
+  height: 13px;
+}
+
+.pocket-tool-foot-left { left: 20px; }
+.pocket-tool-foot-right { right: 20px; }
+
+.pocket-avatar-codex .pocket-tool-avatar {
+  width: 82px;
+  height: 72px;
+  border-color: #24457e;
+  background:
+    linear-gradient(#6fa0ff 0 0) 6px 8px / 70px 52px no-repeat,
+    linear-gradient(#4f82ef 0 0) 16px 0 / 18px 16px no-repeat,
+    linear-gradient(#4f82ef 0 0) 34px 0 / 20px 16px no-repeat,
+    linear-gradient(#4f82ef 0 0) 52px 8px / 18px 18px no-repeat,
+    #5d8fff;
+  box-shadow: inset 0 -9px 0 #3d6edb;
+}
+
+.pocket-avatar-codex .pocket-tool-face {
+  top: 19px;
+  width: 48px;
+  height: 25px;
+  border-color: #233b6d;
+  background: #17223e;
+  color: #8ff6ff;
+}
+
+.pocket-avatar-codex .pocket-tool-eye {
+  display: none;
+}
+
+.pocket-avatar-codex .pocket-tool-arm,
+.pocket-avatar-codex .pocket-tool-foot {
+  background: #4f82ef;
+  border: 3px solid #24457e;
+}
+
+.pocket-avatar-codex .pocket-tool-arm-left { left: -12px; }
+.pocket-avatar-codex .pocket-tool-arm-right { right: -12px; }
+
+.pocket-avatar-claude-code .pocket-tool-avatar {
+  width: 78px;
+  height: 66px;
+  border: 0;
+  background:
+    linear-gradient(#181914 0 0) 26px 18px / 10px 10px no-repeat,
+    linear-gradient(#181914 0 0) 48px 18px / 10px 10px no-repeat,
+    linear-gradient(#d87553 0 0) 0 26px / 78px 38px no-repeat,
+    linear-gradient(#d87553 0 0) 14px 0 / 50px 36px no-repeat;
+  box-shadow: none;
+}
+
+.pocket-avatar-claude-code .pocket-tool-face,
+.pocket-avatar-claude-code .pocket-tool-eye {
+  display: none;
+}
+
+.pocket-avatar-claude-code .pocket-tool-arm {
+  top: 26px;
+  width: 20px;
+  height: 18px;
+  background: #d87553;
+}
+
+.pocket-avatar-claude-code .pocket-tool-arm-left { left: -14px; }
+.pocket-avatar-claude-code .pocket-tool-arm-right { right: -14px; }
+
+.pocket-avatar-claude-code .pocket-tool-foot {
+  bottom: -12px;
+  width: 14px;
+  height: 30px;
+  background: #d87553;
+}
+
+.pocket-avatar-openclaw .pocket-tool-avatar {
+  width: 72px;
+  height: 72px;
+  border-color: #8f2726;
+  border-radius: 28px 28px 24px 24px;
+  background: #e74842;
+  box-shadow: inset 0 -10px 0 #cf3432;
+}
+
+.pocket-avatar-openclaw .pocket-tool-avatar::before,
+.pocket-avatar-openclaw .pocket-tool-avatar::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  width: 20px;
+  height: 18px;
+  border-top: 4px solid #e74842;
+}
+
+.pocket-avatar-openclaw .pocket-tool-avatar::before {
+  left: 12px;
+  transform: rotate(-28deg);
+}
+
+.pocket-avatar-openclaw .pocket-tool-avatar::after {
+  right: 12px;
+  transform: rotate(28deg);
+}
+
+.pocket-avatar-openclaw .pocket-tool-face {
+  display: none;
+}
+
+.pocket-avatar-openclaw .pocket-tool-eye {
+  top: 25px;
+  width: 10px;
+  height: 10px;
+  border: 3px solid #181914;
+  background: #8ff6ff;
+}
+
+.pocket-avatar-openclaw .pocket-tool-arm {
+  top: 32px;
+  width: 18px;
+  height: 22px;
+  border-radius: 12px;
+  background: #e74842;
+}
+
+.pocket-avatar-openclaw .pocket-tool-foot {
+  bottom: -11px;
+  width: 12px;
+  height: 15px;
+  background: #a42c2b;
+}
+
+.pocket-tool-run .pocket-tool-avatar,
+.pocket-tool-ok .pocket-tool-avatar {
+  animation-duration: 0.8s;
+}
+
+.pocket-tool-wait .pocket-tool-avatar {
+  filter: saturate(0.6) contrast(1.2);
+}
+
+.pocket-tool-err .pocket-tool-avatar {
+  animation: pocket-avatar-alert 0.35s steps(2, end) infinite;
+}
+
+.pocket-tool-desk {
+  width: 108px;
+  height: 16px;
+  margin: 0 auto;
+  border-top: 4px solid #181914;
+  background: #b9bca8;
+}
+
+.pocket-tool-meta {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.pocket-tool-meta strong,
+.pocket-tool-meta em {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-tool-meta em {
+  min-width: 34px;
+  border: 2px solid #181914;
+  font-style: normal;
+  text-align: center;
+}
+
+.pocket-usage-bar {
+  height: 8px;
+  border: 2px solid #181914;
+}
+
+.pocket-usage-bar i {
+  display: block;
+  height: 100%;
+  background: #181914;
+}
+
+.pocket-facility {
+  position: absolute;
+  top: 18px;
+  width: 136px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #181914;
+  background: #d7d8c8;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pocket-facility-permissions {
+  left: 54px;
+}
+
+.pocket-facility-assets {
+  right: 54px;
+}
+
+.pocket-detail {
+  height: 70px;
+  margin: 0 18px;
+  padding: 8px 14px;
+  border: 3px solid #181914;
+  overflow: hidden;
+}
+
+.pocket-detail-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.pocket-detail-title strong {
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-detail-title span {
+  min-width: 64px;
+  border: 2px solid #181914;
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.pocket-detail p {
+  margin: 0;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-detail-error {
+  color: #181914;
+  background: #f0f0de;
+}
+
+.pocket-last-command {
+  margin-top: 3px !important;
+  font-size: 12px !important;
+}
+
+.pocket-command-feedback {
+  margin-top: 3px !important;
+  font-size: 12px !important;
+  font-weight: 900;
+}
+
+.pocket-detail-grid {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px minmax(0, 1fr);
+  gap: 4px 8px;
+  font-size: 12px;
+}
+
+.pocket-detail-grid span {
+  font-weight: 900;
+}
+
+.pocket-detail-grid b {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pocket-controls {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.pocket-side-button,
+.pocket-talk-button {
+  position: fixed;
+  z-index: 3;
+  border: 4px solid #181914;
+  background: #efefe4;
+  color: #181914;
+  font-family: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.pocket-side-button {
+  top: 50%;
+  width: 72px;
+  height: 48px;
+  transform: translateY(-50%);
+}
+
+.pocket-side-button-left { left: max(8px, calc(50% - 500px)); }
+.pocket-side-button-right { right: max(8px, calc(50% - 500px)); }
+
+.pocket-talk-button {
+  left: 50%;
+  bottom: 18px;
+  width: 120px;
+  height: 54px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+}
+
+@keyframes pocket-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes pocket-avatar-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes pocket-avatar-alert {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pocket-tool-avatar,
+  .pocket-main-screen i {
+    animation: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .pocket-screen {
+    border-width: 3px;
+  }
+
+  .pocket-side-button {
+    display: none;
+  }
+
+  .pocket-talk-button {
+    bottom: 8px;
+    width: 92px;
+    height: 42px;
   }
 }
